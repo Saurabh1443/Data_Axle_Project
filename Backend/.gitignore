@@ -1,4 +1,4 @@
 myenv/
 __pycache__/
 *.py[cod]
-djangoGirls/db.sqlite3/
+Backend/db.sqlite3/

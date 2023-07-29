@@ -1,7 +1,8 @@
 import "./App.css";
+import { Grid } from "./Grid/grid";
 
 function App() {
-  return <div className="App">Welcome</div>;
+  return <Grid></Grid>;
 }
 
 export default App;

@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import signup_bg from "../illustrations/signup_bg.svg";
+import { Link } from "react-router-dom";
 
 const boxstyle = {
   position: "absolute",
@@ -14,7 +15,7 @@ const boxstyle = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "75%",
-  height: "70%",
+  height: "max-content",
   bgcolor: "background.paper",
   boxShadow: 24,
 };
@@ -31,7 +32,6 @@ export default function Signup() {
   const handleSubmit = async (event) => {
     setOpen(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
   };
 
   return (
@@ -77,6 +77,27 @@ export default function Signup() {
                 sx={{ mt: 2 }}
               >
                 <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography display="flex" gap={1}>
+                      <TextField
+                        required
+                        width="50%"
+                        id="first_name"
+                        label="First Name"
+                        name="firstName"
+                        type="text"
+                      />
+                      <TextField
+                        required
+                        width="50%"
+                        id="last_name"
+                        label="Last Name"
+                        name="lastName"
+                        type="text"
+                      />
+                    </Typography>
+                  </Grid>
+
                   <Grid item xs={12}>
                     <TextField
                       required
@@ -138,9 +159,10 @@ export default function Signup() {
                             cursor: "pointer",
                             fontFamily: "Lato",
                           }}
-                          onClick={() => {}}
                         >
-                          Sign in
+                          <Link to="/login" style={{ textDecoration: "none" }}>
+                            Sign in
+                          </Link>
                         </span>
                       </Typography>
                     </Stack>

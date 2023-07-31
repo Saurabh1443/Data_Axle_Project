@@ -1,4 +1,3 @@
 myenv/
 __pycache__/
 *.py[cod]
-Backend/db.sqlite3/

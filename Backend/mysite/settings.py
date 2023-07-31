@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'accounts.customUser'
 
 # Application definition
 
@@ -27,7 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'emailGeneration',
-    'corsheaders'
+    'accounts',
+    'corsheaders',
+    'rest_framework.authtoken',
+    
     
 
 ]

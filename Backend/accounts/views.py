@@ -6,7 +6,6 @@ from .models import *
 from .serializer import RegestrationSerializer , LoginSerializer
 from django.contrib.auth import authenticate 
 
-# Create your views here.
 
 @api_view(['POST'])
 def Register(request):
@@ -27,6 +26,6 @@ def Login(request):
       user = authenticate(email = email,password = password)
       if user is None:
           return Response({"error":{"msg":f'User with the given email : " {email} " does not exist'},"success":False ,"status":status.HTTP_404_NOT_FOUND}) 
-      return Response({"result":serializer.data,"success":True ,"status":status.HTTP_201_CREATED})
+      return Response({"result":serializer.data,"success":True ,"status":status.HTTP_200_OK})
   
   return Response({"error":serializer.errors,"success":False, "status":status.HTTP_400_BAD_REQUEST})

@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import login_bg from "../illustrations/login_bg.svg";
+import { Link } from "react-router-dom";
 
 const boxstyle = {
   position: "absolute",
@@ -138,9 +139,13 @@ export default function Login() {
                             cursor: "pointer",
                             fontFamily: "Lato",
                           }}
-                          onClick={() => {}}
                         >
-                          Sign up
+                          <Link
+                            to="/register"
+                            style={{ textDecoration: "none" }}
+                          >
+                            Sign up
+                          </Link>
                         </span>
                       </Typography>
                     </Stack>

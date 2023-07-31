@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,116 +8,146 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Button } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-
-function createData(
-  contact_Info,
-  last_name,
-  phone,
-  address,
-  county,
-  age_range,
-  income_range,
-  ai
-) {
-  return {
-    contact_Info,
-    last_name,
-    phone,
-    address,
-    county,
-    age_range,
-    income_range,
-    ai,
-  };
-}
-
-const rows = [
-  createData("India", "IN", 1324171354, 3287263),
-  createData("China", "CN", 1403500365, 9596961),
-  createData("Italy", "IT", 60483973, 301340),
-  createData("United States", "US", 327167434, 9833520),
-  createData("Canada", "CA", 37602103, 9984670),
-  createData("Australia", "AU", 25475400, 7692024),
-  createData("Germany", "DE", 83019200, 357578),
-  createData("Ireland", "IE", 4857000, 70273),
-  createData("Mexico", "MX", 126577691, 1972550),
-  createData("Japan", "JP", 126317000, 377973),
-  createData("France", "FR", 67022000, 640679),
-  createData("United Kingdom", "GB", 67545757, 242495),
-  createData("Russia", "RU", 146793744, 17098246),
-  createData("Nigeria", "NG", 200962417, 923768),
-  createData("Brazil", "BR", 210147125, 8515767),
-];
+import CircularProgress from "@mui/material/CircularProgress";
+import { DataGrid } from "@mui/x-data-grid";
+import { columnGroupsStateInitializer } from "@mui/x-data-grid/internals";
+import { Stack, TextField, Pagination } from "@mui/material";
 
 export default function StickyHeadTable() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+  const [pageLimit, setPageLimit] = useState({
+    pageSize: 10,
+    page: 0,
+  });
+  const [pageNumber, setPageNumber] = useState(1);
   const columns = [
-    { id: "contact_Info", label: "Contact Info", minWidth: 170 },
-    { id: "last_name", label: "Last Name", minWidth: 100 },
+    // { id: "contact_Info", label: "Contact Info", minWidth: 170 },
+    // { id: "last_name", label: "Last Name", minWidth: 100 },
+    // {
+    //   id: "phone",
+    //   label: "Phone",
+    //   minWidth: 170,
+    //   align: "right",
+    //   format: (value) => value.toLocaleString("en-US"),
+    // },
+    // {
+    //   id: "address",
+    //   label: "Address",
+    //   minWidth: 170,
+    //   align: "right",
+    //   format: (value) => value.toLocaleString("en-US"),
+    // },
+    // {
+    //   id: "county",
+    //   label: "County",
+    //   minWidth: 170,
+    //   align: "right",
+    //   format: (value) => value.toFixed(2),
+    // },
+    // {
+    //   id: "age_range",
+    //   label: "Age Range",
+    //   minWidth: 170,
+    //   align: "right",
+    //   format: (value) => value.toFixed(2),
+    // },
+    // {
+    //   id: "income_range",
+    //   label: "Income Range",
+    //   minWidth: 170,
+    //   align: "right",
+    //   format: (value) => value.toFixed(2),
+    // },
+    // {
+    //   id: "ai",
+    //   label: "AI Genie",
+    //   minWidth: 170,
+    //   align: "",
+    //   format: (value) => value.toFixed(2),
+    // },
     {
-      id: "phone",
-      label: "Phone",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toLocaleString("en-US"),
+      field: "first_name",
+      headerName: "First Name",
+      width: 170,
+      valueGetter: (params) => {
+        return `${params.row.first_name + " " + params.row.last_name} `;
+      },
     },
+    { field: "last_name", headerName: "Last Name", width: 170 },
     {
-      id: "address",
-      label: "Address",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toLocaleString("en-US"),
+      field: "phone",
+      headerName: "Phone",
+      width: 170,
+      valueGetter: (params) => {
+        return `Not Available`;
+      },
     },
+    { field: "address", headerName: "Address", width: 170 },
+    { field: "county", headerName: "County", width: 170 },
+    { field: "age_range", headerName: "Age Range", width: 170 },
+    { field: "income_range", headerName: "Income Range", width: 170 },
+    { field: "gender", headerName: "Gender", width: 170 },
     {
-      id: "county",
-      label: "County",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toFixed(2),
-    },
-    {
-      id: "age_range",
-      label: "Age Range",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toFixed(2),
-    },
-    {
-      id: "income_range",
-      label: "Income Range",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toFixed(2),
-    },
-    {
-      id: "ai",
-      label: "AI Genie",
-      minWidth: 170,
-      align: "",
-      format: (value) => value.toFixed(2),
+      field: "ai",
+      headerName: "Genie Ai",
+      width: 170,
+      data: "Hii",
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          size="large"
+          // style={{ marginLeft: 16 }}
+          // tabIndex={params.hasFocus ? 0 : -1}
+        >
+          Open
+        </Button>
+      ),
     },
   ];
 
-  const handleClick = () => {
-    const data = fetch("http://127.0.0.1:8000/api/persons/")
-      .then((data) => console.log(data, "iiiiiiiiiiiiii"))
-      .catch((err) => console.log(err));
-  };
+  useEffect(() => {
+    const fetchDataFromAPI = async () => {
+      try {
+        console.log(pageLimit?.pageSize);
+        const apiUrl = `http://127.0.0.1:8000/api/persons/?limit=${pageLimit.pageSize}&page=${pageNumber}`;
+        const response = await fetch(apiUrl);
+        const responseJson = await response.json();
+        setRows(responseJson?.results);
+        setPageLimit({
+          ...pageLimit?.pageSize,
+          page: responseJson?.info?.total_pages,
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    fetchDataFromAPI();
+  }, [pageLimit.pageSize, pageNumber]);
 
+  const handleClick = () => {};
+
+  const handlePageChange = (e, value) => {
+    console.log(value, "hhhhh");
+    setPageNumber(value);
+  };
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    setPageLimit({ ...pageLimit, pageSize: event?.pageSize });
   };
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440, position: "relative" }}>
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        loading={false}
+        // hideFooterPagination
+        pageSizeOptions={[10, 25, 100]}
+        disableRowSelectionOnClick
+        paginationMode={pageLimit}
+        onPaginationModelChange={handleChangeRowsPerPage}
+      />
+      {/* <TableContainer sx={{ maxHeight: 440, position: "relative" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -137,18 +167,21 @@ export default function StickyHeadTable() {
               return (
                 <>
                   <TableRow
-                    key={row.name}
+                    hover
+                    key={row.first_name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row?.contact_Info}
+                      {row?.first_name}
                     </TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
-                    <TableCell align="right">{row.contact_Info}</TableCell>
+                    <TableCell align="right">{row?.last_name}</TableCell>
+                    <TableCell align="right">Not Available</TableCell>
+                    <TableCell align="right">
+                      {row?.address}, {row?.city}
+                    </TableCell>
+                    <TableCell align="right">{row?.county}</TableCell>
+                    <TableCell align="right">{row?.age_range}</TableCell>
+                    <TableCell align="right">{row?.income_range}</TableCell>
                     <TableCell align="right">
                       <Button onClick={handleClick}>Generate</Button>
                     </TableCell>
@@ -164,11 +197,14 @@ export default function StickyHeadTable() {
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={rows.length}
-        rowsPerPage={rowsPerPage}
+        rowsPerPage={limit}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
+      <Stack alignItems={"end"}>
+        <Pagination count={pageLimit?.page} onChange={handlePageChange} />
+      </Stack>
     </Paper>
   );
 }

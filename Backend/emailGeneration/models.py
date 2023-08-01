@@ -49,7 +49,7 @@ class personData(models.Model):
     travel=models.CharField(max_length=80,blank=True)
 
 
-    def __str__(self) -> str:
-         return self.title
+    # def __str__(self) -> str:
+    #      return self.title
 
 

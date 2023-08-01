@@ -1,29 +1,20 @@
 import openai
-
-openai.api_key  = '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'
+from dotenv import load_dotenv
+load_dotenv() 
+import os
+openai.api_key  = str(os.getenv('OPEN_AI_API_KEY'))
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=0.5, # this is the degree of randomness of the model's output
+        temperature=0.5, 
     )
     return response.choices[0].message['content']
 
 def remove_null_or_empty_values(dictionary):
     return {key: value for key, value in dictionary.items() if value is not None and value != ""}
-
-
-# filtered_dict = remove_null_or_empty_values(sample_dict)
-# print(filtered_dict)
-
-# Attributes={"Product Description":"This is Boat brand, product is Boat Rockerz","Email Tone":"Excitement"}
-# #Personal_Information={"Name":"Manoj","Age_Range":"30-40","hobbies":"Traveller, singing, Reading","language":"English"}
-# Personal_Information={'title': 'Mr', 'first_name': 'Steve', 'middle_initial': 'R', 'last_name': 'Edgerly', 'address': '8700 West Ln Spc 126', 'city': 'Stockton', 'state': 'CA', 'zipcode': 95210, 'countycode': 77, 'county': 'SAN JOAQUIN', 'age_range': '65 - 69', 'income_range': 'Under $20,000', 'potential_investor': 'Likely Investor', 'home_owner': 'Yes', 'marital_status': 'Single', 'ethnicity': 'English', 'language': 'English', 'gender': 'Male', 'estimated_household_income': 'Under $20,000', 'housing_type': 'Trailer Court', 'estimated_home_value': '$1 - $24,999', 'year_home_built': 1975, 'mail_order_purchase': 'Golf                        Car Buff                    Computer                    Health/Fitness              Books And Music             Finance/Investment          Sweepstakes/Gambling        Apparel', 'actual_age': 68, 'birth_month': 'October', 'number_of_children': 0, 'veterans': 'No', 'home_size': 0, 'health': 'General Health & Exercise, Fitness', 'motor_interest': 'Auto Racing Enthusiast', 'politics': 'Politically Liberal', 'purchase_behavior': 'Catalog Shopper', 'technology_entertainment': 'Internet User, Personal Computers, Internet Access'}
- 
-
-
 
 def responseGenerator(personal_information,Attributes):
     temporary = remove_null_or_empty_values(personal_information)
@@ -67,7 +58,3 @@ Personal Information:```{temporary}```\
 
 """
     return get_completion(prompt)
-
-
-# response = get_completion(prompt)
-# print(response)

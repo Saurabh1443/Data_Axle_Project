@@ -73,8 +73,9 @@ def EmailGeneration(request , id):
             
       productDescription = openAiSerializer.data.get('product_description')
       emailTone = openAiSerializer.data.get('email_tone')
+      emailDescription = openAiSerializer.data.get('email_description')
 
-      Attributes={"Product Description":productDescription,"Email Tone":emailTone}
+      Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
       finalResponse =  responseGenerator(personSerializer.data ,Attributes )
 
       return JsonResponse({

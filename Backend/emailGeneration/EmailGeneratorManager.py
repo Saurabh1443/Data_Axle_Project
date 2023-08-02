@@ -17,44 +17,34 @@ def remove_null_or_empty_values(dictionary):
     return {key: value for key, value in dictionary.items() if value is not None and value != ""}
 
 def responseGenerator(personal_information,Attributes):
-    temporary = remove_null_or_empty_values(personal_information)
+    personal_information = remove_null_or_empty_values(personal_information)
+
     prompt = f"""your objective is to compose a concise, personalized \
-email using the provided information. 
+email with subject using the provided information. 
+Before generating email,
+    i. first check product description under Attributes and analyze product description.\
+    ii. Given a product description in one word, check if it corresponds to an existing product or brand name.\
+    iii. Given a product description in sentences, verify that the description pertains to a specific product and does not contain any irrelevant information beyond the product description.\
+    iv. If any of ii or iii condition is not satisfying then don't follow below guidelines and just print "Please, enter a valid product description."\
 
-Please follow these guidelines:\
-Before generating entire email, first check product description under Attributes and analyze product description.\
-Check that the product description provided below is in a meaningful english or a brand name \
-that already exist or not and if does not exist then don't follow the below instruction and just print "This product does not exist"
-1. Use the attributes and personal information delimited in triple backticks for dynamic content.\
-2. Check the language under Personal Information, if available, translate the email from english to given language\
-3. Compose a compelling email that aligns with the given email tone\
-and product under attributes. Different email tones are:\
-Excitement: Generate enthusiasm and anticipation around a new product launch or upcoming sale.
-Personalized: Tailor the email to the recipient's preferences or previous purchases, making them feel valued.
-Informative: Provide detailed information about the product's features, benefits, and how it solves a problem.
-Urgency: Create a sense of urgency by emphasizing limited quantities, time-limited offers, or exclusive deals.
-Social Proof: Showcase positive reviews, testimonials, or user-generated content to build trust and credibility.
-Storytelling: Engage the reader by sharing a compelling narrative or success story related to the product.
-Exclusive: Offer special discounts, promotions, or access to exclusive content for email subscribers only.
-Educational: Share valuable tips, guides, or tutorials related to the product's use or industry insights.
-Interactive: Encourage engagement through interactive elements like polls, quizzes, or interactive product demos.
-Humorous: Inject humor and playfulness into the email to entertain and create a memorable impression.\
-
-4. Strictly, Keep the content within 250 characters.\
-5. Utilize as many fields under personal information as possible in combination to create an engaging \
-email but don't show any sensitive personal information in email but you must print person's name. \
-6. If you come across any irrelevant fields under personal information, unrelated to the product \
+Follow the guidelines below:\
+1. Generate a short email with maximum 2 lines in each paragraph with maximum 3 paragraphs.
+2. Use the "Attributes" and "Personal Information" delimited in triple backticks for generating dynamic content in email.\
+3. Attributes section is provided by Product owner and Personal information is of a target person.\
+4. Compose a compelling email that aligns with the given Product Description, email tone and Email tone description under attributes.\
+5. Feel free to use emojis or other Unicode characters to add emphasis or express emotions in the email.\
+6. Strictly, Do not include product descriptions, features, or any special offers, deals, or discounts in the email, unless explicitly mentioned in the Product Description.\
+7. Utilize as many fields under "Personal Information" as possible in combination to create an engaging \
+email.\
+8. If you come across any irrelevant fields under "Personal Information", unrelated to the product \
 or unsuitable for the email, please omit them. Prioritize the recipient's name \
 and relevant details to ensure a meaningful email. \
-7. Remember to respect privacy guidelines and focus on engaging the recipient \
-with a personalized message. \
-
-    
+9. Remember you are prohibited from including PII data fields present in Personal Information under Attributes in email \
+and focus on engaging the recipient with a personalized message. \
+  
 Attributes:```{Attributes}```\
 
-
-Personal Information:```{temporary}```\
-
+Personal Information:```{personal_information}```\
 
 """
     return get_completion(prompt)

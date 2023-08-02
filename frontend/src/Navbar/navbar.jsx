@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 export const MuiNavbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: "black" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "black" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -21,20 +21,6 @@ export const MuiNavbar = () => {
           {/* <img src={data_axle_genie} alt="logo"></img> */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Data Axle SalesGenie
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, color: "black" }}
-          >
-            500
-          </Typography>
-          <Typography variant="body1" sx={{ color: "black", marginLeft: 10 }}>
-            Total Records
           </Typography>
         </Toolbar>
       </AppBar>

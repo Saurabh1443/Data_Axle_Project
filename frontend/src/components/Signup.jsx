@@ -27,10 +27,11 @@ const center = {
 };
 
 export default function Signup() {
-  const [setOpen] = useState(false);
-
+  // const [setOpen] = useState(false);
+   
   const handleSubmit = async (event) => {
-    setOpen(true);
+    // setOpen(true);
+    console.log(event)
     event.preventDefault();
   };
 
@@ -133,6 +134,7 @@ export default function Signup() {
                       variant="contained"
                       fullWidth
                       size="large"
+                      type="submit"
                       sx={{
                         borderRadius: 28,
                         color: "#ffffff",

@@ -12,6 +12,7 @@ user = get_user_model()
 @api_view(['GET'])
 def Person(request):
  if request.method == "GET":
+    print(request.GET.get('limit'), "uuuuuuuuuu")
     page_number = request.GET.get('page',1)
     limit = request.GET.get('limit',10)
     search_query = request.GET.get('name',"")

@@ -8,6 +8,7 @@ from .customPagination import customPagination
 from .EmailGeneratorManager import responseGenerator
 from django.http import JsonResponse
 import openai
+import json
 
 @api_view(['GET'])
 def Person(request):
@@ -77,9 +78,9 @@ def EmailGeneration(request , id):
 
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
       finalResponse =  responseGenerator(personSerializer.data ,Attributes )
-
-      return JsonResponse({
-        'response': finalResponse,
+      
+      return Response({
+        'result': finalResponse,
         "success":True,
         "error":{},
         "status":status.HTTP_200_OK  
@@ -100,7 +101,13 @@ def EmailGeneration(request , id):
       "success":False ,
       "status":status.HTTP_404_NOT_FOUND
     })
-  
+  except ValueError as ve:
+    return Response({
+      "error":{"msg":"Please, enter a valid product description."},
+      "result":{},
+      "success":False ,
+      "status":status.HTTP_404_NOT_FOUND
+    })
   except openai.error.AuthenticationError as e:
     return Response({
       "error":{"msg":"Incorrect Api Key provided"},

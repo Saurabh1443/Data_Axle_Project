@@ -2,6 +2,8 @@ import openai
 from dotenv import load_dotenv
 load_dotenv() 
 import os
+import json
+
 openai.api_key  = str(os.getenv('OPEN_AI_API_KEY'))
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
@@ -9,9 +11,13 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=0.5, 
+        temperature=0, 
     )
-    return response.choices[0].message['content']
+    
+    if(response.choices[0].message['content'] =="Please, enter a valid product description."):
+        raise ValueError("Please, enter a valid product description.")
+    
+    return json.loads(response.choices[0].message['content'])
 
 def remove_null_or_empty_values(dictionary):
     return {key: value for key, value in dictionary.items() if value is not None and value != ""}
@@ -41,6 +47,7 @@ or unsuitable for the email, please omit them. Prioritize the recipient's name \
 and relevant details to ensure a meaningful email. \
 9. Remember you are prohibited from including PII data fields present in Personal Information under Attributes in email \
 and focus on engaging the recipient with a personalized message. \
+10. Generate email in json format, with "subject","regards", and each paragraph in different key like "para1", "para2",etc.
   
 Attributes:```{Attributes}```\
 

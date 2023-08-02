@@ -1,15 +1,15 @@
-import { Button } from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { MuiNavbar } from "../Navbar/navbar";
+import Home from "./Home";
+import Data from "./Data";
 
 function Dashboard() {
   return (
-    <div>
-      Welcome
-      <Link to="/login" style={{ textDecoration: "none" }}>
-        <Button>Login</Button>
-      </Link>
-    </div>
+    <>
+      <MuiNavbar/>
+      <Home />
+      <Data />
+    </>
   );
 }
 

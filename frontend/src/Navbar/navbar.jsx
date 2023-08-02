@@ -1,42 +1,43 @@
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-
-import IconButton from "@mui/material/IconButton";
+import { Box, Button } from "@mui/material";
+import logo from "../illustrations/logo.png";
+import { Link } from "react-router-dom";
 
 export const MuiNavbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: "black" }}>
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "white",
+          display: "flex",
+          flexDirection: "row",
+          gap: "75%",
+        }}
+      >
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          ></IconButton>
-          {/* <img src={data_axle_genie} alt="logo"></img> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Data Axle SalesGenie
-          </Typography>
+          <img src={logo} alt="logo" height="70px"></img>
         </Toolbar>
-      </AppBar>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, color: "black" }}
+        <Link to="/login" style={{ textDecoration: "none" }}>
+          <Button
+            size="medium"
+            sx={{
+              borderRadius: "15px",
+              color: "#ffffff",
+              padding: "5px",
+              backgroundColor: "black",
+              fontFamily: "Lato",
+              marginTop: "20px",
+              "&:hover": {
+                backgroundColor: "#555444",
+              },
+            }}
           >
-            500
-          </Typography>
-          <Typography variant="body1" sx={{ color: "black", marginLeft: 10 }}>
-            Total Records
-          </Typography>
-        </Toolbar>
+            Login
+          </Button>
+        </Link>
       </AppBar>
     </Box>
   );

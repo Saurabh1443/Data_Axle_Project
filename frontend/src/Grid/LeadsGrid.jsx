@@ -15,6 +15,8 @@ import { GridDrawer } from "../components/Drawer";
 
 export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
+  const [personId, setPersonId] = useState("");
+
   const [pageLimit, setPageLimit] = useState({
     pageSize: 10,
     page: 0,
@@ -29,9 +31,9 @@ export default function StickyHeadTable() {
     console.log(searchQuery);
   };
 
-  const handleModelClick = () => {
+  const handleModelClick = (params) => {
     setDrawer(true);
-    console.log(drawer);
+    setPersonId(params?.id);
   };
 
   const columns = [
@@ -40,7 +42,7 @@ export default function StickyHeadTable() {
       headerName: "CONTACT INFO",
       width: 170,
       valueGetter: (params) => {
-        return `${params.row.first_name + " " + params.row.last_name} `;
+        return `${params?.row?.first_name + " " + params?.row?.last_name} `;
       },
     },
     { field: "last_name", headerName: "LAST NAME", width: 170 },
@@ -63,7 +65,11 @@ export default function StickyHeadTable() {
       width: 170,
       data: "Hii",
       renderCell: (params) => (
-        <Button variant="contained" size="small" onClick={handleModelClick}>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleModelClick(params)}
+        >
           AI-AutoMailer
         </Button>
       ),
@@ -151,9 +157,6 @@ export default function StickyHeadTable() {
                 ),
               }}
             />
-            {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              
-            </Typography> */}
           </Toolbar>
         </AppBar>
       </Box>
@@ -169,84 +172,13 @@ export default function StickyHeadTable() {
         pagination={pageLimit}
         onPaginationModelChange={handleChangeRowsPerPage}
       />
-      <GridDrawer open={drawer} handleClose={() => setDrawer(false)} />
-
-      {/* <Drawer
-        variant="persistent"
-        PaperProps={{
-          elevation: 50,
-          sx: {
-            width: "30%",
-            top: "128px",
-          },
-        }}
-        anchor={"right"}
+      <GridDrawer
+        personId={personId}
         open={drawer}
-        //style={{ width: "60%" }}
-        // onClose={}
-      >
-        You think water moves fast? You should see ice. Also this is a dumb
-        filler sentence.You think water moves fast? You should see ice. Also
-        this is a dumb filler sentence.You think water moves fast? You should
-        see ice. Also this is a dumb filler sentence.You think water moves fast?
-        You should see ice. Also this is a dumb filler sentence
-      </Drawer> */}
+        handleClose={() => setDrawer(false)}
+        
+      />
 
-      {/* <TableContainer sx={{ maxHeight: 440, position: "relative" }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows?.map((row) => {
-              return (
-                <>
-                  <TableRow
-                    hover
-                    key={row.first_name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row?.first_name}
-                    </TableCell>
-                    <TableCell align="right">{row?.last_name}</TableCell>
-                    <TableCell align="right">Not Available</TableCell>
-                    <TableCell align="right">
-                      {row?.address}, {row?.city}
-                    </TableCell>
-                    <TableCell align="right">{row?.county}</TableCell>
-                    <TableCell align="right">{row?.age_range}</TableCell>
-                    <TableCell align="right">{row?.income_range}</TableCell>
-                    <TableCell align="right">
-                      <Button onClick={handleClick}>Generate</Button>
-                    </TableCell>
-                  </TableRow>
-                </>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={limit}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
       <Stack alignItems={"end"}>
         <Pagination count={pageLimit?.page} onChange={handlePageChange} />
       </Stack>

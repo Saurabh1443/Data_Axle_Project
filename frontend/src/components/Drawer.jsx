@@ -3,9 +3,12 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import SmartToyTwoToneIcon from "@mui/icons-material/SmartToyTwoTone";
 import React, { useState } from "react";
 import { emailField } from "../staticData";
+import { ResEmail } from "./ResponseEmail";
+import { ToastContainer, toast } from "react-toastify";
 
 import {
   Typography,
@@ -19,10 +22,25 @@ import {
 import { blue, grey, red } from "@mui/material/colors";
 import { columnGroupsStateInitializer } from "@mui/x-data-grid/internals";
 
-export const GridDrawer = ({ open, handleClose }) => {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 2 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+export const GridDrawer = ({ open, handleClose, personId }) => {
   const [product, setProduct] = useState("");
   const [emailTone, setEmailTone] = useState("");
-  const [emailDescriptiion, setEmailDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [responseMail, setResponseMail] = useState(false); //false
+  const [emailResponse, setEmailResponse] = useState("");
+
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -31,27 +49,52 @@ export const GridDrawer = ({ open, handleClose }) => {
   const handleEmailToneChange = (event) => {
     setEmailTone(event.target.value);
   };
-  
-  const fetchDataFromAPI = async () => {
+
+  const fetchDataFromAPI = async (email_description) => {
     try {
-      const apiUrl = `http://127.0.0.1:8000/api/persons`;
-      const response = await fetch(apiUrl);
-      const responseJson = await response.json();
-      
+      console.log(personId);
+      const apiUrl = `http://127.0.0.1:8000/api/persons/generateEmail/${personId}`;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          product_description: product,
+          email_tone: emailTone,
+          email_description: email_description,
+        }),
+      });
+
+      const { result, error, success } = await response.json();
+      if (!success) {
+        setResponseMail(false);
+        toast.error(error?.msg, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return;
+      } else {
+        setEmailResponse(result);
+        setResponseMail(true);
+        // setEmailResponse(result);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleSubmit = (event) => {
-    const email_description = emailField?.find(
-      (vv) => vv?.email_tone === emailTone
-    );
+  const handleSubmit = async (event) => {
+    const email = emailField?.find((vv) => vv?.email_tone === emailTone);
 
-    //console.log(product, emailTone, " ", email_description);
     event.preventDefault();
-    fetchDataFromAPI(product,)
-
+    try {
+      setLoading(true);
+      console.log(email?.email_description);
+      await fetchDataFromAPI(email?.email_description);
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
 
   return (
@@ -59,14 +102,14 @@ export const GridDrawer = ({ open, handleClose }) => {
       variant="persistent"
       PaperProps={{
         sx: {
-          width: "30%",
+          width: "50%",
           top: "128px",
           //height: "90%",
         },
       }}
+      //onClose={handleClose}
       anchor={"right"}
       open={open}
-      onClose={handleClose}
     >
       <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
         <Box sx={{ width: "100%", height: 100, border: 1 }}>
@@ -88,71 +131,101 @@ export const GridDrawer = ({ open, handleClose }) => {
               top: 8,
               right: 8,
             }}
-            onClick={handleClose}
+            onClick={async () => {
+              setProduct("");
+              setEmailTone("");
+              setResponseMail(false);
+              await handleClose();
+            }}
           >
             <CloseIcon />
           </IconButton>
         </Box>
-        <Paper
-          variant="outlined"
-          square
-          sx={{
-            m: "2%",
-            height: "80%",
-          }}
-        >
-          <Typography fontWeight={500} ml={3} mt={2}>
-            Let us know some more details
-          </Typography>
-          <Typography fontWeight={300} ml={3} mt={2}>
-            1. Describe product you want to market?*
-          </Typography>
-          {/* onSubmit={handleSubmit} */}
-          <form onSubmit={handleSubmit}>
-            <TextField
-              id="outlined-basic"
-              //label="Headphone , Insurance,etc"
-              placeholder="Headphone,Insurance,etc"
-              variant="outlined"
-              sx={{ ml: 5, mt: 2, minWidth: 270 }}
-              onChange={handleProductChange}
+        {loading ? (
+          <>
+            <CircularProgress
+              sx={{ display: "block", margin: "auto", mt: 4 }}
             />
-            <Typography fontWeight={300} ml={3} mt={2}>
-              2. Select a tone for Email content*
+            <Typography fontWeight={500} m={5}>
+              Grab a cup of coffee while we generate the email for you...
             </Typography>
-            {/* <InputLabel id="demo-simple-select-helper-label">Age</InputLabel> */}
-            <FormControl sx={{ ml: 5, mt: 2, minWidth: 270 }}>
-              <InputLabel id="demo-simple-select-helper-label">
-                Select Email Tone
-              </InputLabel>
-              <Select
-                //labelId="demo-simple-select-helper-label"
-                id="email-tone"
-                value={emailTone}
-                label="Select Email Tone"
-                onChange={handleEmailToneChange}
-              >
-                {emailField?.map((vv, ind) => {
-                  return (
-                    <MenuItem key={ind} value={`${vv.email_tone}`}>
-                      <em>{vv.email_tone}</em>
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-
-            <Button
+          </>
+        ) : responseMail ? (
+          <ResEmail emailResponse={emailResponse}></ResEmail>
+        ) : (
+          <>
+            <Paper
               variant="outlined"
-              type="submit"
-              color="inherit"
-              sx={{ ml: 20, mt: 4 }}
+              square
+              sx={{
+                m: "2%",
+                height: "80%",
+              }}
             >
-              Generate Email
-            </Button>
-          </form>
-        </Paper>
+              {/* yaha cond render krna hai */}
+
+              <Typography fontWeight={500} ml={3} mt={2}>
+                Let us know some more details
+              </Typography>
+              <Typography fontWeight={300} ml={3} mt={2}>
+                1. Describe product you want to market?*
+              </Typography>
+              {/* onSubmit={handleSubmit} */}
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  id="outlined-basic"
+                  //label="Headphone , Insurance,etc"
+
+                  placeholder="Headphone,Insurance,etc"
+                  variant="outlined"
+                  required
+                  value={product}
+                  sx={{ ml: 5, mt: 2, minWidth: 270 }}
+                  onChange={handleProductChange}
+                />
+                <Typography fontWeight={300} ml={3} mt={2}>
+                  2. Select a tone for Email content*
+                </Typography>
+                {/* <InputLabel id="demo-multiple-name-label">Age</InputLabel> */}
+                <FormControl sx={{ ml: 5, mt: 2, minWidth: 270 }}>
+                  <InputLabel id="demo-simple-select-helper-label">
+                    Select Email Tone
+                  </InputLabel>
+                  <Select
+                    //labelId="demo-simple-select-helper-label"
+                    id="email-tone"
+                    required
+                    value={emailTone}
+                    label="Select Email Tone"
+                    onChange={handleEmailToneChange}
+                    MenuProps={MenuProps}
+                  >
+                    {emailField?.map((vv, ind) => {
+                      return (
+                        <MenuItem key={ind} value={`${vv.email_tone}`}>
+                          <em>{vv.email_tone}</em>
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+
+                <Button
+                  variant="outlined"
+                  type="submit"
+                  color="inherit"
+                  sx={{ ml: 20, mt: 4 }}
+                >
+                  Generate Email
+                </Button>
+              </form>
+
+              {/* yaha tak  */}
+            </Paper>
+          </>
+        )}
       </Paper>
+      <ToastContainer />
     </Drawer>
   );
 };

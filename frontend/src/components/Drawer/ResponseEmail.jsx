@@ -62,20 +62,30 @@ export const ResEmail = ({ emailResponse, children }) => {
         </div>
 
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
-          {emailResponse?.para1}
+          <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
+            {emailResponse?.para1}
+          </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
-          {emailResponse?.para2}
+          <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
+            {emailResponse?.para2}
+          </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
-          {emailResponse?.para3}
+          <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
+            {emailResponse?.para3}
+          </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
-          {emailResponse?.para4}
+          <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
+            {emailResponse?.para4}
+          </Typography>
         </div>
         <br />
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
-          {emailResponse?.regards}
+          <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
+            {emailResponse?.regards}
+          </Typography>
         </div>
         <Tooltip title="Copy To Clipboard" placement="left">
           <Button

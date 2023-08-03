@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
+import CardActions from "@mui/material/CardActions";
 
 import {
   Typography,
@@ -40,7 +41,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [loading, setLoading] = useState(false);
   const [responseMail, setResponseMail] = useState(false); //false
   const [emailResponse, setEmailResponse] = useState("");
-
+  const [index, setIndex] = useState(0);
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -64,6 +65,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           product_description: product,
           email_tone: emailTone,
           email_description: email_description,
+          index: index,
         }),
       });
 
@@ -84,13 +86,18 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     }
   };
 
+  const handleGoBack = () => {
+    setIndex(0);
+    setResponseMail((emailResponse) => !emailResponse);
+  };
+
   const handleSubmit = async (event) => {
     const email = emailField?.find((vv) => vv?.email_tone === emailTone);
 
     event.preventDefault();
     try {
+      setIndex((index) => (index + 1) % 5);
       setLoading(true);
-      console.log(email?.email_description);
       await fetchDataFromAPI(email?.email_description);
     } finally {
       setLoading(false); // Stop loading
@@ -103,7 +110,8 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       PaperProps={{
         sx: {
           width: "30%",
-          top: "128px",
+          top: "133px",
+
           //height: "90%",
         },
       }}
@@ -111,8 +119,20 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       anchor={"right"}
       open={open}
     >
-      <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-        <Box sx={{ width: "100%", height: 100, border: 1 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          backgroundColor: "#F5F5F5",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            height: 100,
+          }}
+        >
           <SmartToyTwoToneIcon
             display={"inline"}
             sx={{ ml: 4, mt: 3, mr: 1.5 }}
@@ -151,7 +171,30 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
             </Typography>
           </>
         ) : responseMail ? (
-          <ResEmail emailResponse={emailResponse}></ResEmail>
+          <ResEmail
+            // fetchDataFromAPI={fetchDataFromAPI}
+            // emailTone={emailTone}
+            emailResponse={emailResponse}
+          >
+            <CardActions sx={{ display: "flex" }}>
+              <Button
+                variant="outlined"
+                onClick={handleGoBack}
+                color="inherit"
+                // sx={{ mt: 1 }}
+              >
+                Go Back
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                // sx={{ mt: 1 }}
+                onClick={handleSubmit}
+              >
+                Regenerate Email
+              </Button>
+            </CardActions>
+          </ResEmail>
         ) : (
           <>
             <Paper
@@ -225,6 +268,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           </>
         )}
       </Paper>
+
       <ToastContainer />
     </Drawer>
   );

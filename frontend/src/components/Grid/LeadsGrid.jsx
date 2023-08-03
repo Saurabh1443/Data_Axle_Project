@@ -40,11 +40,11 @@ export default function StickyHeadTable() {
   const columns = [
     {
       field: "first_name",
-      headerName: "CONTACT INFO",
+      headerName: "FIRST NAME",
       width: 170,
-      valueGetter: (params) => {
-        return `${params?.row?.first_name + " " + params?.row?.last_name} `;
-      },
+      // valueGetter: (params) => {
+      //   return `${params?.row?.first_name + " " + params?.row?.last_name} `;
+      // },
     },
     { field: "last_name", headerName: "LAST NAME", width: 170 },
     {

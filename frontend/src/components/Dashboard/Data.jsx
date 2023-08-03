@@ -1,8 +1,8 @@
 import { Card, CardHeader, Typography } from "@mui/material";
 import React from "react";
-import marketing from "../illustrations/marketing.svg";
-import fundraising from "../illustrations/fundraising.svg";
-import product from "../illustrations/product.svg";
+import marketing from "../../illustrations/marketing.svg";
+import fundraising from "../../illustrations/fundraising.svg";
+import product from "../../illustrations/product.svg";
 
 const style = {
   root: {

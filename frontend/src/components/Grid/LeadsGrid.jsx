@@ -11,7 +11,8 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import _ from "lodash";
-import { GridDrawer } from "../components/Drawer";
+import { GridDrawer } from "../Drawer/Drawer";
+import { MuiNavbar } from "../Navbar/navbar";
 
 export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
@@ -58,7 +59,7 @@ export default function StickyHeadTable() {
     { field: "county", headerName: "COUNTY", width: 170 },
     { field: "age_range", headerName: "AGE RANGE", width: 170 },
     { field: "income_range", headerName: "INCOME RANGE", width: 170 },
-    { field: "gender", headerName: "GENDER", width: 170 },
+    { field: "gender", headerName: "GENDER", width: 140 },
     {
       field: "ai",
       headerName: "GENIE AI",
@@ -135,10 +136,17 @@ export default function StickyHeadTable() {
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <MuiNavbar />
       <Box>
         <AppBar
           position="fixed"
-          sx={{ backgroundColor: "white", marginTop: 8 }}
+          sx={{
+            backgroundColor: "white",
+            marginTop: 8.8,
+            borderBottom: 1,
+            borderColor: "#C5C5C5",
+          }}
+          elevation={0}
         >
           <Toolbar>
             {/* <img src={data_axle_genie} alt="logo"></img> */}
@@ -176,7 +184,6 @@ export default function StickyHeadTable() {
         personId={personId}
         open={drawer}
         handleClose={() => setDrawer(false)}
-        
       />
 
       <Stack alignItems={"end"}>

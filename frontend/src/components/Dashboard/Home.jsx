@@ -1,5 +1,5 @@
 import React from "react";
-import dataaxle from "../illustrations/dataaxle.png";
+import dataaxle from "../../illustrations/dataaxle.png";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 

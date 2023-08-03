@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import SmartToyTwoToneIcon from "@mui/icons-material/SmartToyTwoTone";
 import React, { useState } from "react";
-import { emailField } from "../staticData";
+import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -102,7 +102,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       variant="persistent"
       PaperProps={{
         sx: {
-          width: "50%",
+          width: "30%",
           top: "128px",
           //height: "90%",
         },

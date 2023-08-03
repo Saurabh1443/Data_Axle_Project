@@ -1,16 +1,15 @@
 import "./App.css";
-import Login from "./components/Login";
+import Login from "./components/Login/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./components/Signup";
-import Dashboard from "./components/Dashboard";
-import StickyHeadTable from "./Grid/LeadsGrid";
-import { MuiNavbar } from "./Navbar/navbar";
+import Signup from "./components/Signup/Signup";
+import Dashboard from "./components/Dashboard/Dashboard";
+import StickyHeadTable from "./components/Grid/LeadsGrid";
+//import { MuiNavbar } from "./Navbar/navbar";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <MuiNavbar />
         <Routes>
           <Route path="/login" exact element={<Login />}></Route>
           <Route path="/register" exact element={<Signup />}></Route>

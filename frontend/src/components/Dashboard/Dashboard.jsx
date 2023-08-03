@@ -6,7 +6,7 @@ import Data from "./Data";
 function Dashboard() {
   return (
     <>
-      <MuiNavbar/>
+      <MuiNavbar />
       <Home />
       <Data />
     </>

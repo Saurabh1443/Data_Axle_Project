@@ -34,7 +34,7 @@ export const ResEmail = ({ emailResponse, children }) => {
     <Card
       square
       sx={{
-        m: "2%",
+        m: "0%",
         mb: "10%",
         height: "70%",
         width: "96%",
@@ -47,7 +47,7 @@ export const ResEmail = ({ emailResponse, children }) => {
         square
         sx={{
           m: "2%",
-          height: "70%",
+          height: "65%",
           width: "95%",
           overflow: "auto",
           position: "relative",

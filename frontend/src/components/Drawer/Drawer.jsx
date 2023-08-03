@@ -4,12 +4,13 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import SmartToyTwoToneIcon from "@mui/icons-material/SmartToyTwoTone";
-import React, { useState } from "react";
+import { flushSync } from "react-dom";
+import React, { useEffect, useState } from "react";
 import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
 import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
+import { loadingMessages } from "../../staticData";
 
 import {
   Typography,
@@ -42,6 +43,8 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [loading, setLoading] = useState(false);
   const [responseMail, setResponseMail] = useState(false); //false
   const [emailResponse, setEmailResponse] = useState("");
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+
   const [index, setIndex] = useState(0);
   const handleProductChange = (event) => {
     setProduct(event.target.value);
@@ -51,6 +54,24 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const handleEmailToneChange = (event) => {
     setEmailTone(event.target.value);
   };
+
+  useEffect(() => {
+    let interval;
+
+    const changeLoadingMessage = () => {
+      setLoadingMessageIndex(
+        (prevIndex) => (prevIndex + 1) % loadingMessages.length
+      );
+    };
+
+    setLoadingMessageIndex(0);
+
+    interval = setInterval(changeLoadingMessage, 7000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const fetchDataFromAPI = async (email_description) => {
     try {
@@ -101,7 +122,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       setLoading(true);
       await fetchDataFromAPI(email?.email_description);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -112,10 +133,8 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         sx: {
           width: "30%",
           top: "135px",
-          //height: "90%",
         },
       }}
-      //onClose={handleClose}
       anchor={"right"}
       open={open}
     >
@@ -131,6 +150,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           sx={{
             width: "100%",
             height: 90,
+            mb: 0,
           }}
         >
           <Typography display="flex" ml={3} mt={1}>
@@ -162,11 +182,11 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               top: 8,
               right: 8,
             }}
-            onClick={async () => {
+            onClick={() => {
               setProduct("");
               setEmailTone("");
               setResponseMail(false);
-              await handleClose();
+              handleClose();
             }}
           >
             <CloseIcon />
@@ -178,7 +198,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               sx={{ display: "block", margin: "auto", mt: 4 }}
             />
             <Typography fontWeight={500} m={5}>
-              Grab a cup of coffee while we generate the email for you...
+              {loadingMessages[loadingMessageIndex]}
             </Typography>
           </>
         ) : responseMail ? (

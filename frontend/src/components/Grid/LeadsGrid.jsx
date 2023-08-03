@@ -26,9 +26,8 @@ export default function StickyHeadTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [gridLoading, setGridLoading] = useState(true);
   const [drawer, setDrawer] = useState(false);
-  const [totalEntries, setTotalEntries] = useState("")
+  const [totalEntries, setTotalEntries] = useState("");
   const [searchName, setSearchName] = useState("");
-
 
   const handleModelClick = (params) => {
     setDrawer(true);
@@ -72,14 +71,13 @@ export default function StickyHeadTable() {
     },
   ];
 
-  const handleNameSearch= _.debounce(async (e) => {
+  const handleNameSearch = _.debounce(async (e) => {
     try {
-        
       const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchName}`;
       const response = await fetch(apiUrl);
       const responseJson = await response.json();
       setRows(responseJson?.results);
-      setTotalEntries(responseJson?.info?.total_entries)
+      setTotalEntries(responseJson?.info?.total_entries);
       setPageLimit((pageLimit) => ({
         ...pageLimit,
         ...{ page: responseJson?.info?.total_pages },
@@ -87,13 +85,11 @@ export default function StickyHeadTable() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, 500)
+  }, 500);
 
   useEffect(() => {
-    handleNameSearch()
-  }, [pageLimit?.pageSize, pageNumber,searchName]);
-
-  
+    handleNameSearch();
+  }, [pageLimit?.pageSize, pageNumber, searchName]);
 
   const handlePageChange = (e, value) => {
     setPageNumber(value);
@@ -119,7 +115,7 @@ export default function StickyHeadTable() {
           }}
           elevation={0}
         >
-          <Toolbar style={{display:"flex",justifyContent:"space-between"}}>
+          <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
             {/* <img src={data_axle_genie} alt="logo"></img> */}
             <TextField
               id="outlined-basic"
@@ -136,10 +132,10 @@ export default function StickyHeadTable() {
                 ),
               }}
             />
-            <Typography fontSize="22px" color="black">Total records: {totalEntries} 
+            <Typography fontSize="22px" color="black">
+              Total records: {totalEntries}
             </Typography>
           </Toolbar>
-          
         </AppBar>
       </Box>
       <DataGrid
@@ -147,7 +143,6 @@ export default function StickyHeadTable() {
         columns={columns}
         rows={rows}
         loading={false}
-        // hideFooterPagination
         columnBuffer={1}
         pageSizeOptions={[10, 25, 100]}
         disableRowSelectionOnClick

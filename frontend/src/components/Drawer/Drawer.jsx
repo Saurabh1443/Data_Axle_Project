@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
+import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
 
 import {
   Typography,
@@ -103,7 +104,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       PaperProps={{
         sx: {
           width: "30%",
-          top: "128px",
+          top: "135px",
           //height: "90%",
         },
       }}
@@ -113,14 +114,18 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     >
       <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
         <Box sx={{ width: "100%", height: 100, border: 1 }}>
-          <SmartToyTwoToneIcon
-            display={"inline"}
-            sx={{ ml: 4, mt: 3, mr: 1.5 }}
-          />
-          <Typography variant="h5" display={"inline"} fontWeight={400}>
-            Genie-Ai
+          <Typography display="flex" margin={0.7}>
+            <img src={dataaxle_logo} height="40px" width="40px" />
+            <Typography
+              variant="h5"
+              display={"inline"}
+              fontWeight={400}
+              margin="5px"
+            >
+              Genie-Ai
+            </Typography>
           </Typography>
-          <Typography fontSize={12} ml={9}>
+          <Typography fontSize={12} ml={2}>
             Let our Genie AI assist you in <br />
             “Generating personalised email content”.
           </Typography>

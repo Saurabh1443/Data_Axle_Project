@@ -41,7 +41,7 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    // setOpen(true);
+    
     console.log(event)
     event.preventDefault();
 
@@ -68,7 +68,6 @@ export default function Signup() {
         });
         return;
       }
-
       localStorage.setItem("email", result?.email);
       navigate("/");
     }

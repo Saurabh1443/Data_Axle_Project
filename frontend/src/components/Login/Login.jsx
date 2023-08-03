@@ -11,6 +11,9 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useEffect } from "react";
+import { useNavigate , useParams } from "react-router-dom";
+
+
 const boxstyle = {
   position: "absolute",
   top: "50%",
@@ -32,6 +35,8 @@ export default function Login() {
   const [setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+  const {next} = useParams()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,11 +58,8 @@ export default function Login() {
         });
         return;
       }
-      toast.success("Login successfull", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
       localStorage.setItem("email", result?.email);
-      // navigate('/')
+       navigate(`/${next}`)
     }
   };
 

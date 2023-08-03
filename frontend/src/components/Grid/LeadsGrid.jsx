@@ -17,7 +17,6 @@ import { MuiNavbar } from "../Navbar/navbar";
 export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
   const [personId, setPersonId] = useState("");
-
   const [pageLimit, setPageLimit] = useState({
     pageSize: 10,
     page: 0,
@@ -26,11 +25,9 @@ export default function StickyHeadTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [gridLoading, setGridLoading] = useState(true);
   const [drawer, setDrawer] = useState(false);
+  const [totalEntries, setTotalEntries] = useState("")
+  const [searchName, setSearchName] = useState("");
 
-  const searchBasedApi = (e) => {
-    setSearchQuery(e.target.value);
-    console.log(searchQuery);
-  };
 
   const handleModelClick = (params) => {
     setDrawer(true);
@@ -40,11 +37,8 @@ export default function StickyHeadTable() {
   const columns = [
     {
       field: "first_name",
-      headerName: "CONTACT INFO",
+      headerName: "First Name",
       width: 170,
-      valueGetter: (params) => {
-        return `${params?.row?.first_name + " " + params?.row?.last_name} `;
-      },
     },
     { field: "last_name", headerName: "LAST NAME", width: 170 },
     {
@@ -77,52 +71,28 @@ export default function StickyHeadTable() {
     },
   ];
 
-  const debouncedFetchDataFromAPI = useCallback(
-    _.debounce(async (searchQuery) => {
-      try {
-        const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchQuery}`;
-        const response = await fetch(apiUrl);
-        const responseJson = await response.json();
-        setRows(responseJson?.results);
-        setPageLimit((pageLimit) => ({
-          ...pageLimit,
-          ...{ page: responseJson?.info?.total_pages },
-        }));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }, 1000),
-    [pageNumber, pageLimit?.pageSize]
-  );
-
-  // useEffect(() => {
-  //   debouncedFetchDataFromAPI(searchQuery);
-
-  //   return () => {
-  //     debouncedFetchDataFromAPI.cancel();
-  //   };
-  // }, [searchQuery, debouncedFetchDataFromAPI]);
+  const handleNameSearch= _.debounce(async (e) => {
+    try {
+        
+      const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchName}`;
+      const response = await fetch(apiUrl);
+      const responseJson = await response.json();
+      setRows(responseJson?.results);
+      setTotalEntries(responseJson?.info?.total_entries)
+      setPageLimit((pageLimit) => ({
+        ...pageLimit,
+        ...{ page: responseJson?.info?.total_pages },
+      }));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, 500)
 
   useEffect(() => {
-    const fetchDataFromAPI = async () => {
-      try {
-        const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}`;
-        const response = await fetch(apiUrl);
-        const responseJson = await response.json();
-        setRows(responseJson?.results);
-        setPageLimit((pageLimit) => ({
-          ...pageLimit,
-          ...{ page: responseJson?.info?.total_pages },
-        }));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    handleNameSearch()
+  }, [pageLimit?.pageSize, pageNumber,searchName]);
 
-    fetchDataFromAPI();
-  }, [pageLimit?.pageSize, pageNumber]);
-
-  const handleClick = () => {};
+  
 
   const handlePageChange = (e, value) => {
     setPageNumber(value);
@@ -148,15 +118,15 @@ export default function StickyHeadTable() {
           }}
           elevation={0}
         >
-          <Toolbar>
+          <Toolbar style={{display:"flex",justifyContent:"space-between"}}>
             {/* <img src={data_axle_genie} alt="logo"></img> */}
             <TextField
               id="outlined-basic"
               variant="outlined"
               size="small"
               placeholder="Search By First Name "
-              sx={{ width: 600 }}
-              onChange={searchBasedApi}
+              sx={{ width: 525 }}
+              onChange={(e) => setSearchName(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <Stack paddingRight={"20px"}>
@@ -165,7 +135,10 @@ export default function StickyHeadTable() {
                 ),
               }}
             />
+            <Typography fontSize="22px" color="black">Total records: {totalEntries} 
+            </Typography>
           </Toolbar>
+          
         </AppBar>
       </Box>
       <DataGrid

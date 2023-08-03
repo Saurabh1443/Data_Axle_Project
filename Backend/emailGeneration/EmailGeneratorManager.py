@@ -7,7 +7,10 @@ import json
 openai.api_key  = str(os.getenv('OPEN_AI_API_KEY'))
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
-    messages = [{"role": "user", "content": prompt}]
+    messages = [
+        {"role":"system","content":"You are an expert in writing personalized emails for product marketing."},
+        {"role": "user", "content": prompt}
+        ]
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
@@ -26,12 +29,12 @@ def responseGenerator(personal_information,Attributes):
     personal_information = remove_null_or_empty_values(personal_information)
 
     prompt = f"""your objective is to compose a concise, personalized \
-email with subject using the provided information. 
+email in english with subject using the provided information. 
 Before generating email,
     i. first check product description under Attributes and analyze product description.\
-    ii. Given a product description in one word, check if it corresponds to an existing product or brand name.\
+    ii. Given a product description in one word, check if it corresponds to an existing product or brand name. Please only consider nouns and noun phrases as valid product descriptions and exclude adjectives, adverbs, and verbs from the response."\
     iii. Given a product description in sentences, verify that the description pertains to a specific product and does not contain any irrelevant information beyond the product description.\
-    iv. If any of ii or iii condition is not satisfying then don't follow below guidelines and just print "Please, enter a valid product description."\
+    iv. If any of ii or iii condition is not satisfying then don't follow below guidelines and just print "Please, Enter a valid product description."\
 
 Follow the guidelines below:\
 1. Generate a short email with maximum 2 lines in each paragraph with maximum 3 paragraphs.
@@ -47,11 +50,13 @@ or unsuitable for the email, please omit them. Prioritize the recipient's name \
 and relevant details to ensure a meaningful email. \
 9. Remember you are prohibited from including PII data fields present in Personal Information under Attributes in email \
 and focus on engaging the recipient with a personalized message. \
-10. Generate email in json format, with "subject","regards", and each paragraph in different key like "para1", "para2",etc.
+10. Generate email in json format, with "subject","regards" and each paragraph in different key like "para1", "para2",etc. 
+
   
 Attributes:```{Attributes}```\
 
 Personal Information:```{personal_information}```\
 
 """
+    
     return get_completion(prompt)

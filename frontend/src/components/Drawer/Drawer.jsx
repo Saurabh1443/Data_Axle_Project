@@ -9,7 +9,8 @@ import React, { useState } from "react";
 import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
-import CardActions from "@mui/material/CardActions";
+import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
+
 
 import {
   Typography,
@@ -19,6 +20,7 @@ import {
   InputLabel,
   FormControl,
   Button,
+  CardActions,
 } from "@mui/material";
 import { blue, grey, red } from "@mui/material/colors";
 import { columnGroupsStateInitializer } from "@mui/x-data-grid/internals";
@@ -110,8 +112,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       PaperProps={{
         sx: {
           width: "30%",
-          top: "133px",
-
+          top: "135px",
           //height: "90%",
         },
       }}

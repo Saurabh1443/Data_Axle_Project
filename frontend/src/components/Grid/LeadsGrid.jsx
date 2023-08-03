@@ -13,6 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import _ from "lodash";
 import { GridDrawer } from "../Drawer/Drawer";
 import { MuiNavbar } from "../Navbar/navbar";
+import Footer from "../Dashboard/Footer";
 
 export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
@@ -189,6 +190,7 @@ export default function StickyHeadTable() {
       <Stack alignItems={"end"}>
         <Pagination count={pageLimit?.page} onChange={handlePageChange} />
       </Stack>
+      <Footer />
     </Paper>
   );
 }

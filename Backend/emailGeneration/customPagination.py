@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 def customPagination(data, paginator, pagenumber):
     if int(pagenumber) > paginator.num_pages:
-        raise ValidationError("There is nothing here", code=404)
+        raise ValueError("There's No data on this page. Go to another page")
     try:
         previous_page_number = paginator.page(
             pagenumber).previous_page_number()

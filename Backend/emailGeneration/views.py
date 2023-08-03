@@ -75,9 +75,10 @@ def EmailGeneration(request , id):
       productDescription = openAiSerializer.data.get('product_description')
       emailTone = openAiSerializer.data.get('email_tone')
       emailDescription = openAiSerializer.data.get('email_description')
+      index = openAiSerializer.data.get('index')
 
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
-      finalResponse =  responseGenerator(personSerializer.data ,Attributes )
+      finalResponse =  responseGenerator(personSerializer.data ,Attributes ,index)
       
       return Response({
         'result': finalResponse,
@@ -101,9 +102,10 @@ def EmailGeneration(request , id):
       "success":False ,
       "status":status.HTTP_404_NOT_FOUND
     })
-  except ValueError as ve:
+  except ValueError as e:
+    msg  = e
     return Response({
-      "error":{"msg":"Please, enter a valid product description."},
+      "error":{"msg":msg},
       "result":{},
       "success":False ,
       "status":status.HTTP_404_NOT_FOUND
@@ -117,6 +119,7 @@ def EmailGeneration(request , id):
     })      
   
   except openai.error.ServiceUnavailableError or openai.error.RateLimitError or openai.error.APIError as e:
+    print(e,"ttttttttttt")
     return Response({
       "error":{"msg":"Service unavailable! Try after some time"},
       "result":{},

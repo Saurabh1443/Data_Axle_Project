@@ -10,8 +10,8 @@ function Home() {
   
   return (
     <Container>
-      <Typography display="flex" flexDirection="row" gap="30%" marginTop={8}>
-        <Box sx={{ marginTop: "10px" }}>
+      <Typography display="flex" flexDirection="row" gap="30%" marginTop={12}>
+        <Box sx={{ marginTop: "30px" }}>
           <h1>
             Data Axle powers your <br />
             <span style={{ color: "purple" }}>Marketing.</span>

@@ -11,5 +11,6 @@ class PersonDataSerializer(serializers.ModelSerializer):
 class OpenAiContextSerializer(serializers.Serializer):
     product_description = serializers.CharField()
     email_tone = serializers.CharField() 
-    email_description = serializers.CharField()   
+    email_description = serializers.CharField()  
+    index = serializers.IntegerField() 
         

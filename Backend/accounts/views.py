@@ -7,15 +7,24 @@ from .serializer import RegestrationSerializer , LoginSerializer
 from django.contrib.auth import authenticate 
 from django.core.exceptions import ObjectDoesNotExist
 
+
+# Handle Response object
+def handleResponse(error,result,success,status):
+  return Response({
+      "error":error,
+      "result":result,
+      "success":success ,
+      "status":status
+    })
+
 @api_view(['POST'])
 def Register(request):
   serializer = RegestrationSerializer(data=request.data)
   if serializer.is_valid():
         serializer.save( )
-        return Response({"result":serializer.data,"success":True ,"error":{},"status":status.HTTP_201_CREATED})
+        return handleResponse({},serializer.data,True,status.HTTP_201_CREATED) 
   
-  return Response({"error":serializer.errors,"success":False,"result":{}, "status":status.HTTP_400_BAD_REQUEST})
-
+  return handleResponse(serializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
 
 @api_view(['POST'])
 def Login(request):
@@ -28,11 +37,12 @@ def Login(request):
        try:
         check  = customUser.objects.get(email = email)
        except ObjectDoesNotExist:
-           return Response({"error":{"msg":f'User with the given email : " {email} " does not exist'},"result":{},"success":False ,"status":status.HTTP_404_NOT_FOUND})  
-       
+           return handleResponse({"error":{"msg":f'User with the given email : " {email} " does not exist'}},{},False,status.HTTP_404_NOT_FOUND) 
+
        user = authenticate(email = email,password = password)
        if user is None:
-          return Response({"error":{"msg":"Wrong password given"},"result":{},"success":False ,"status":status.HTTP_404_NOT_FOUND}) 
-       return Response({"result":serializer.data,"success":True,"error":{},"status":status.HTTP_200_OK})
+          return handleResponse({"msg":"Wrong password given"},{},False,status.HTTP_401_UNAUTHORIZED) 
+          
+       return handleResponse({},serializer.data,True,status.HTTP_200_OK) 
       
-  return Response({"error":serializer.errors,"success":False,"result":{}, "status":status.HTTP_400_BAD_REQUEST})
+  return handleResponse(serializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 

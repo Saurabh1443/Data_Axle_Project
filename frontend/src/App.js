@@ -12,7 +12,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/login/:next?" exact element={<Login />}></Route>
+          <Route path="/login" exact element={<Login />}></Route>
           <Route path="/register" exact element={<Signup />}></Route>
           <Route path="/" exact element={
               <Dashboard />

@@ -10,7 +10,8 @@ import login_bg from "../../illustrations/login_bg.svg";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useEffect } from "react";
+import React from "react";
+
 import { useNavigate , useParams } from "react-router-dom";
 
 
@@ -36,8 +37,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate()
-  const {next} = useParams()
-
+   const next = window.location.href?.split("?next=")?.[1]
+  console.log(next)
   const handleSubmit = async (event) => {
     event.preventDefault();
     {
@@ -59,7 +60,12 @@ export default function Login() {
         return;
       }
       localStorage.setItem("email", result?.email);
-       navigate(`/${next}`)
+      if (next) {
+        navigate(`${next}`)
+      } else {
+        navigate(`/`)
+      }
+       
     }
   };
 

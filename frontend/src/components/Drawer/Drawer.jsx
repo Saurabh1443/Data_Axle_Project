@@ -110,7 +110,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       variant="persistent"
       PaperProps={{
         sx: {
-          width: "30%",
+          width: "30vw",
           top: "135px",
           //height: "90%",
         },

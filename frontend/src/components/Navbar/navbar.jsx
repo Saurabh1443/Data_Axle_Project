@@ -19,7 +19,7 @@ export const MuiNavbar = () => {
           backgroundColor: "white",
           display: "flex",
           flexDirection: "row",
-          gap: "75%",
+          justifyContent:"space-between",
           borderBottom: 1,
           borderColor: "#C5C5C5",
         }}
@@ -37,6 +37,7 @@ export const MuiNavbar = () => {
               backgroundColor: "black",
               fontFamily: "Lato",
               marginTop: "20px",
+              marginRight: "20px",
               "&:hover": {
                 backgroundColor: "#555444",
               },
@@ -45,7 +46,7 @@ export const MuiNavbar = () => {
             Login
           </Button>
         </Link>:
-        <LogoutIcon  onClick = {handleLogout} style={{marginTop:"18px",cursor:"pointer"}} fontSize="large" color="success" />}
+        <LogoutIcon  onClick = {handleLogout} style={{marginTop:"18px",marginRight: "20px",cursor:"pointer"}} fontSize="large" color="success" />}
       </AppBar>
     </Box>
   );

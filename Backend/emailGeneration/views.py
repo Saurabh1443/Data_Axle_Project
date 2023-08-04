@@ -8,27 +8,40 @@ from .customPagination import customPagination
 from .EmailGeneratorManager import responseGenerator
 from django.http import JsonResponse
 import openai
-import json
+
+
+# handle api response
+def handleResponse(error,result,success,status):
+  return Response({
+      "error":error,
+      "result":result,
+      "success":success ,
+      "status":status
+    })
 
 @api_view(['GET'])
 def Person(request):
+ 
  if request.method == "GET":   
   page_number = request.GET.get('page',1)
   limit = request.GET.get('limit',10)
   search_query = request.GET.get('name',"")
+  try:
+   allPerson = personData.objects.filter(first_name__contains=f'{search_query}')
 
-  allPerson = personData.objects.filter(first_name__contains=f'{search_query}')
-
-  page_obj = Paginator(allPerson,limit)
-  paginatedResult = customPagination(allPerson,page_obj,page_number)
-  serializer = PersonDataSerializer(paginatedResult['results'], many=True) 
-  return Response({
+   page_obj = Paginator(allPerson,limit)
+   paginatedResult = customPagination(allPerson,page_obj,page_number)
+   serializer = PersonDataSerializer(paginatedResult['results'], many=True) 
+   return Response({
    "info": paginatedResult['pagination'],
     "status":status.HTTP_200_OK,
-    "results":serializer.data,
+    "result":serializer.data,
     "success":True,
     "error":{}
-  })
+   })
+  except ValueError as ve:
+    
+    return handleResponse({"msg":f"{ve.args[0]}"},{},False,status.HTTP_404_NOT_FOUND)
 
   # if request.method=="POST":
   #       print(type(request.data), "jjjjjjjjjjj")
@@ -46,21 +59,12 @@ def person_detail(request,id):
    person = personData.objects.get(pk=id)
 
   except personData.DoesNotExist:
-    return Response({
-      "error":{"msg":"User does not exist"},
-      "result":{},
-      "success":False ,
-      "status":status.HTTP_404_NOT_FOUND
-    })
+    return handleResponse({"msg":"User does not exist"},{},False,status.HTTP_404_NOT_FOUND) 
   
   if request.method == 'GET':
     serializer = PersonDataSerializer(person)
-    return Response({
-      "status":status.HTTP_200_OK,
-      "result":serializer.data,
-      "success":True ,
-       "error":{}
-    })
+    return handleResponse({},serializer.data,True,status.HTTP_200_OK) 
+    
   
 @api_view(['POST'])
 def EmailGeneration(request , id):
@@ -80,54 +84,34 @@ def EmailGeneration(request , id):
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
       finalResponse =  responseGenerator(personSerializer.data ,Attributes ,index)
       
-      return Response({
-        'result': finalResponse,
-        "success":True,
-        "error":{},
-        "status":status.HTTP_200_OK  
-      })
-        
+      return handleResponse({},finalResponse,True,status.HTTP_200_OK)  
     else:
-      return Response({
-        "error":openAiSerializer.errors,
-        "success":False,
-        "result":{}, 
-        "status":status.HTTP_400_BAD_REQUEST
-      })   
+      return handleResponse(openAiSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
+        
       
   except personData.DoesNotExist:
-    return Response({
-      "error":{"msg":"User does not exist"},
-      "result":{},
-      "success":False ,
-      "status":status.HTTP_404_NOT_FOUND
-    })
-  except ValueError as e:
-    msg  = e
-    return Response({
-      "error":{"msg":msg},
-      "result":{},
-      "success":False ,
-      "status":status.HTTP_404_NOT_FOUND
-    })
+    return handleResponse({"msg":"User does not exist"},{},False,status.HTTP_404_NOT_FOUND) 
+    
+  except ValueError as ve:
+    return handleResponse({"msg":f"{ve.args[0]}"},{},False,status.HTTP_404_NOT_FOUND)
+    
   except openai.error.AuthenticationError as e:
-    return Response({
-      "error":{"msg":"Incorrect Api Key provided"},
-      "result":{},
-      "success":False ,
-      "status":status.HTTP_404_NOT_FOUND
-    })      
-  
-  except openai.error.ServiceUnavailableError or openai.error.RateLimitError or openai.error.APIError as e:
-    print(e,"ttttttttttt")
-    return Response({
-      "error":{"msg":"Service unavailable! Try after some time"},
-      "result":{},
-      "success":False ,
-      "status":status.HTTP_404_NOT_FOUND
-    })      
+    return handleResponse({"msg":"Incorrect Api Key provided"},{},False,status.HTTP_401_UNAUTHORIZED)
         
-        
-  
+  except openai.error.Timeout as e:
+    return handleResponse({"msg":"Service timed out! Try after some time"},{},False,status.HTTP_408_REQUEST_TIMEOUT)
+    
+  except openai.error.ServiceUnavailableError as e:
+    return handleResponse({"msg":"Service unavailable ! Try after some time"},{},False,status.HTTP_503_SERVICE_UNAVAILABLE)
 
- 
+  except openai.error.RateLimitError as e:      
+    return handleResponse({"msg":"Rate Limit ! Try after some time"},{},False,status.HTTP_425_TOO_EARLY)   
+        
+  except openai.error.InvalidRequestError as e:      
+    return handleResponse({"msg":"Invalid data provided"},{},False,status.HTTP_404_NOT_FOUND)   
+  
+  except openai.error.APIError as e:      
+    return handleResponse({"msg":"Having problem with OpenAi Api"},{},False,status.HTTP_400_BAD_REQUEST)   
+
+  except Exception as e:
+    return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   

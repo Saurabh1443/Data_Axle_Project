@@ -59,7 +59,12 @@ export default function Login() {
         return;
       }
       localStorage.setItem("email", result?.email);
-       navigate(`/${next}`)
+      if(next){
+       navigate(`/${next}`);
+      }else{
+       navigate('/')
+      }
+       
     }
   };
 

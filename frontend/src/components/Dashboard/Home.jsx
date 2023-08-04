@@ -24,7 +24,7 @@ function Home() {
             Bringing data to life with 50 years of experience
           </h3>
           <Link
-            to={`${userExists==null?"/login/leads":"/leads"}`}
+            to={`${userExists==null? `/login?next=/leads` : '/leads'}`}
             style={{ textDecoration: "none" }}
           >
             <Button

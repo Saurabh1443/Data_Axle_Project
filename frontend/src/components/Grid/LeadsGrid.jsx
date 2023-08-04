@@ -8,12 +8,13 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import _ from "lodash";
 import { GridDrawer } from "../Drawer/Drawer";
 import { MuiNavbar } from "../Navbar/navbar";
 import Footer from "../Dashboard/Footer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
@@ -24,7 +25,7 @@ export default function StickyHeadTable() {
   });
   const [pageNumber, setPageNumber] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [gridLoading, setGridLoading] = useState(true);
+  const [gridLoading, setGridLoading] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [totalEntries, setTotalEntries] = useState("");
   const [searchName, setSearchName] = useState("");
@@ -75,21 +76,35 @@ export default function StickyHeadTable() {
     try {
       const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchName}`;
       const response = await fetch(apiUrl);
-      const responseJson = await response.json();
-      setRows(responseJson?.results);
-      setTotalEntries(responseJson?.info?.total_entries);
+      const { error, result, success, ...vv } = await response.json();
+      setGridLoading(false)
+      if (!success) {
+        setRows([]);
+        toast.error(`${error?.msg}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return
+      }
+      else {
+        setRows(result);
+      setTotalEntries(vv?.info?.total_entries)
       setPageLimit((pageLimit) => ({
         ...pageLimit,
-        ...{ page: responseJson?.info?.total_pages },
+        ...{ page: vv?.info?.total_pages },
       }));
+      }
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }, 500);
 
   useEffect(() => {
-    handleNameSearch();
-  }, [pageLimit?.pageSize, pageNumber, searchName]);
+    setGridLoading(true)
+    handleNameSearch()
+  }, [pageLimit?.pageSize, pageNumber,searchName]);
+
+  
 
   const handlePageChange = (e, value) => {
     setPageNumber(value);
@@ -139,11 +154,10 @@ export default function StickyHeadTable() {
         </AppBar>
       </Box>
       <DataGrid
-        sx={{ marginTop: 16 }}
+        sx={{ marginTop: 16}}
         columns={columns}
         rows={rows}
-        loading={false}
-        columnBuffer={1}
+        loading={gridLoading}
         pageSizeOptions={[10, 25, 100]}
         disableRowSelectionOnClick
         initialState={{
@@ -162,6 +176,7 @@ export default function StickyHeadTable() {
         <Pagination count={pageLimit?.page} onChange={handlePageChange} />
       </Stack>
       <Footer />
+      <ToastContainer />
     </Paper>
   );
 }

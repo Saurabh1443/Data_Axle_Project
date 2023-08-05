@@ -75,15 +75,18 @@ def EmailGeneration(request , id):
     openAiSerializer = OpenAiContextSerializer(data=request.data)
 
     if openAiSerializer.is_valid():
+
             
       productDescription = openAiSerializer.data.get('product_description')
       emailTone = openAiSerializer.data.get('email_tone')
       emailDescription = openAiSerializer.data.get('email_description')
-      index = openAiSerializer.data.get('index')
+      
 
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
-      finalResponse =  responseGenerator(personSerializer.data ,Attributes ,index)
-      
+      openAiResponse =  responseGenerator(personSerializer.data ,Attributes )
+      finalResponse = [vv["message"]["content"] for vv in openAiResponse]
+
+      print(finalResponse)
       return handleResponse({},finalResponse,True,status.HTTP_200_OK)  
     else:
       return handleResponse(openAiSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
@@ -113,5 +116,6 @@ def EmailGeneration(request , id):
   except openai.error.APIError as e:      
     return handleResponse({"msg":"Having problem with OpenAi Api"},{},False,status.HTTP_400_BAD_REQUEST)   
 
-  except Exception as e:
-    return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   
+  # except Exception as e:
+    
+  #   return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   

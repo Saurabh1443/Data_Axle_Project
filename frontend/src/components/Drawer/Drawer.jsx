@@ -42,10 +42,10 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [emailTone, setEmailTone] = useState("");
   const [loading, setLoading] = useState(false);
   const [responseMail, setResponseMail] = useState(false); //false
-  const [emailResponse, setEmailResponse] = useState("");
+  const [emailResponse, setEmailResponse] = useState([]);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
-
-  const [index, setIndex] = useState(0);
+  const[index,setIndex] = useState(0)
+  
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -73,9 +73,13 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     };
   }, []);
 
-  const fetchDataFromAPI = async (email_description) => {
+  const fetchDataFromAPI = async (event) => {
     try {
-      console.log(personId);
+      
+      event.preventDefault();
+      setLoading(true);
+      const email = emailField?.find(vv=>vv?.email_tone==emailTone)
+      
       const apiUrl = `http://127.0.0.1:8000/api/persons/generateEmail/${personId}`;
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -86,42 +90,55 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         body: JSON.stringify({
           product_description: product,
           email_tone: emailTone,
-          email_description: email_description,
-          index: index,
+          email_description: email?.email_description,
+          
         }),
       });
 
       const { result, error, success } = await response.json();
+      setLoading(false);
+      
       if (!success) {
         setResponseMail(false);
         toast.error(error?.msg, {
           position: toast.POSITION.TOP_RIGHT,
         });
+       
         return;
       } else {
-        setEmailResponse(result);
+        if(result?.length>0){
+          let filteredData = [];
+          for(let vv of result){
+            filteredData.push(JSON.parse(vv))
+          }
+          console.log(filteredData)
+          setEmailResponse(filteredData)
+        }else{
+          setEmailResponse([]);
+        }
         setResponseMail(true);
-        // setEmailResponse(result);
+        
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+    
   };
 
   const handleGoBack = () => {
-    setIndex(0);
+    setIndex(0)
     setResponseMail((emailResponse) => !emailResponse);
   };
 
-  const handleSubmit = async (event) => {
-    const email = emailField?.find((vv) => vv?.email_tone === emailTone);
+  const handleSubmit = () => {
 
-    event.preventDefault();
     try {
-      setIndex((index) => (index + 1) % 5);
+      setIndex(index=>(index+1)%5)
+      
       setLoading(true);
-      await fetchDataFromAPI(email?.email_description);
+      
     } finally {
+      
       setLoading(false);
     }
   };
@@ -205,6 +222,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           <ResEmail
             // fetchDataFromAPI={fetchDataFromAPI}
             // emailTone={emailTone}
+            index = {index}
             emailResponse={emailResponse}
           >
             <CardActions sx={{ display: "flex" }}>
@@ -246,11 +264,9 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                 1. Describe product you want to market?*
               </Typography>
               {/* onSubmit={handleSubmit} */}
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={fetchDataFromAPI}>
                 <TextField
                   id="outlined-basic"
-                  //label="Headphone , Insurance,etc"
-
                   placeholder="Headphone,Insurance,etc"
                   variant="outlined"
                   required
@@ -267,7 +283,6 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                     Select Email Tone
                   </InputLabel>
                   <Select
-                    //labelId="demo-simple-select-helper-label"
                     id="email-tone"
                     required
                     value={emailTone}

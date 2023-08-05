@@ -8,10 +8,12 @@ import { useState } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopyRounded";
 import DoneOutlineRoundedIcon from "@mui/icons-material/DoneOutlineRounded";
 
-export const ResEmail = ({ emailResponse, children }) => {
+export const ResEmail = ({ emailResponse, children,index }) => {
   const [isCopied, setIsCopied] = useState(false);
-
+  
+  
   const handleCopyToClipboard = () => {
+  
     const emailText = getEmailText();
     navigator.clipboard.writeText(emailText);
     setIsCopied(true);
@@ -19,13 +21,14 @@ export const ResEmail = ({ emailResponse, children }) => {
 
   const getEmailText = () => {
     // Combine email response content into a single string
+
     const contentArray = [
-      emailResponse?.subject,
-      emailResponse?.para1,
-      emailResponse?.para2,
-      emailResponse?.para3,
-      emailResponse?.para4,
-      emailResponse?.regards,
+      emailResponse?.[index]?.subject,
+      emailResponse?.[index]?.para1,
+      emailResponse?.[index]?.para2,
+      emailResponse?.[index]?.para3,
+      emailResponse?.[index]?.para4,
+      emailResponse?.[index]?.regards,
     ];
 
     return contentArray.filter(Boolean).join("\n");
@@ -57,34 +60,34 @@ export const ResEmail = ({ emailResponse, children }) => {
         <div style={{ display: "flex" }}>
           <h4>Subject: </h4>
           <Typography fontSize={15} fontWeight={400} m={1} mt={2.9}>
-            {emailResponse?.subject}
+            {emailResponse?.[index]?.subject}
           </Typography>
         </div>
 
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
           <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
-            {emailResponse?.para1}
+            {emailResponse?.[index]?.para1}
           </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
           <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
-            {emailResponse?.para2}
+            {emailResponse?.[index]?.para2}
           </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
           <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
-            {emailResponse?.para3}
+            {emailResponse?.[index]?.para3}
           </Typography>
         </div>
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
           <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
-            {emailResponse?.para4}
+            {emailResponse?.[index]?.para4}
           </Typography>
         </div>
         <br />
         <div style={{ wordBreak: "break-word", wordSpacing: "2px" }}>
           <Typography fontSize={15} fontWeight={350} m={1} mt={2.9}>
-            {emailResponse?.regards}
+            {emailResponse?.[index]?.regards}
           </Typography>
         </div>
         <Tooltip title="Copy To Clipboard" placement="left">

@@ -1,9 +1,5 @@
 import Card from "@mui/material/Card";
-import { Button, Paper, TextField, Tooltip, Typography } from "@mui/material";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import { Tabs } from "@mui/base";
-import { ThemeProvider } from "@emotion/react";
+import { Button, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopyRounded";
 import DoneOutlineRoundedIcon from "@mui/icons-material/DoneOutlineRounded";
@@ -18,7 +14,6 @@ export const ResEmail = ({ emailResponse, children }) => {
   };
 
   const getEmailText = () => {
-    // Combine email response content into a single string
     const contentArray = [
       emailResponse?.subject,
       emailResponse?.para1,
@@ -35,7 +30,7 @@ export const ResEmail = ({ emailResponse, children }) => {
       square
       sx={{
         m: "2%",
-        mb: "10%",
+        mb: "4%",
         height: "70%",
         width: "96%",
         overflow: "hidden",
@@ -98,7 +93,6 @@ export const ResEmail = ({ emailResponse, children }) => {
               position: "sticky",
               ml: "88%",
               bottom: 0,
-
               minWidth: 0,
               p: 1,
               backgroundColor: "rgba(255, 255, 255, 0.8)",
@@ -111,7 +105,6 @@ export const ResEmail = ({ emailResponse, children }) => {
             {isCopied ? (
               <>
                 <DoneOutlineRoundedIcon size={"large"} />
-                {/* <Typography fontSize={12}>Copied!</Typography> */}
               </>
             ) : (
               <>
@@ -119,7 +112,6 @@ export const ResEmail = ({ emailResponse, children }) => {
                   onClick={handleCopyToClipboard}
                   size={"large"}
                 />
-                {/* <Typography fontSize={12}>Copy to Clipboard</Typography> */}
               </>
             )}
           </Button>

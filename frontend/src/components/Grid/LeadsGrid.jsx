@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import { Button, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Stack, Pagination } from "@mui/material";
-//import Drawer from "@mui/material/Drawer";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -24,12 +23,10 @@ export default function StickyHeadTable() {
     page: 0,
   });
   const [pageNumber, setPageNumber] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
   const [gridLoading, setGridLoading] = useState(false);
   const [drawer, setDrawer] = useState(false);
-  const [totalEntries, setTotalEntries] = useState("")
+  const [totalEntries, setTotalEntries] = useState("");
   const [searchName, setSearchName] = useState("");
-
 
   const handleModelClick = (params) => {
     setDrawer(true);
@@ -43,19 +40,30 @@ export default function StickyHeadTable() {
       width: 170,
     },
     { field: "last_name", headerName: "LAST NAME", width: 170 },
-    {
-      field: "phone",
-      headerName: "PHONE",
-      width: 170,
-      valueGetter: (params) => {
-        return `Not Available`;
-      },
-    },
     { field: "address", headerName: "ADDRESS", width: 170 },
     { field: "county", headerName: "COUNTY", width: 170 },
-    { field: "age_range", headerName: "AGE RANGE", width: 170 },
     { field: "income_range", headerName: "INCOME RANGE", width: 170 },
-    { field: "gender", headerName: "GENDER", width: 140 },
+    { field: "gender", headerName: "GENDER", width: 120 },
+    {
+      field: "technology_entertainment",
+      headerName: "TECHNICAL INTEREST",
+      width: 170,
+      renderCell: (vv) => {
+        return (
+          <>{vv?.formattedValue == "" ? "Not Available" : vv?.formattedValue}</>
+        );
+      },
+    },
+    {
+      field: "hobbies",
+      headerName: "HOBBIES",
+      width: 140,
+      renderCell: (vv) => {
+        return (
+          <>{vv?.formattedValue == "" ? "Not Available" : vv?.formattedValue}</>
+        );
+      },
+    },
     {
       field: "ai",
       headerName: "GENIE AI",
@@ -73,40 +81,35 @@ export default function StickyHeadTable() {
     },
   ];
 
-  const handleNameSearch= _.debounce(async (e) => {
+  const handleNameSearch = _.debounce(async (e) => {
     try {
-        
       const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchName}`;
       const response = await fetch(apiUrl);
       const { error, result, success, ...vv } = await response.json();
-      setGridLoading(false)
+      setGridLoading(false);
       if (!success) {
         setRows([]);
         toast.error(`${error?.msg}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        return
-      }
-      else {
+        return;
+      } else {
         setRows(result);
-      setTotalEntries(vv?.info?.total_entries)
-      setPageLimit((pageLimit) => ({
-        ...pageLimit,
-        ...{ page: vv?.info?.total_pages },
-      }));
+        setTotalEntries(vv?.info?.total_entries);
+        setPageLimit((pageLimit) => ({
+          ...pageLimit,
+          ...{ page: vv?.info?.total_pages },
+        }));
       }
-      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }, 500)
+  }, 500);
 
   useEffect(() => {
-    setGridLoading(true)
-    handleNameSearch()
-  }, [pageLimit?.pageSize, pageNumber,searchName]);
-
-  
+    setGridLoading(true);
+    handleNameSearch();
+  }, [pageLimit?.pageSize, pageNumber, searchName]);
 
   const handlePageChange = (e, value) => {
     setPageNumber(value);
@@ -132,7 +135,7 @@ export default function StickyHeadTable() {
           }}
           elevation={0}
         >
-          <Toolbar style={{display:"flex",justifyContent:"space-between"}}>
+          <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
             {/* <img src={data_axle_genie} alt="logo"></img> */}
             <TextField
               id="outlined-basic"
@@ -149,14 +152,14 @@ export default function StickyHeadTable() {
                 ),
               }}
             />
-            <Typography fontSize="22px" color="black">Total records: {totalEntries} 
+            <Typography fontSize="22px" color="black">
+              Total records: {totalEntries}
             </Typography>
           </Toolbar>
-          
         </AppBar>
       </Box>
       <DataGrid
-        sx={{ marginTop: 16}}
+        sx={{ marginTop: 16 }}
         columns={columns}
         rows={rows}
         loading={gridLoading}

@@ -30,9 +30,6 @@ const center = {
 };
 
 export default function Signup() {
-  // const [setOpen] = useState(false);
-   
-  const [setOpen] = useState(false);
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,12 +38,10 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    
-    console.log(event)
+    console.log(event);
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      console.log("not matched");
       toast.error("Password and Confirm Password are not same", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -76,7 +71,6 @@ export default function Signup() {
   return (
     <>
       <Box sx={boxstyle}>
-        {/* Outer Card box */}
         <Grid container>
           <Grid item xs={12} sm={12} lg={6} gap={2}>
             <Box

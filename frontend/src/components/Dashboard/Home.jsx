@@ -3,11 +3,9 @@ import dataaxle from "../../illustrations/dataaxle.png";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-
 function Home() {
-  
-  const userExists = localStorage.getItem("email")
-  
+  const userExists = localStorage.getItem("email");
+
   return (
     <Container>
       <Typography display="flex" flexDirection="row" gap="30%" marginTop={12}>
@@ -24,7 +22,7 @@ function Home() {
             Bringing data to life with 50 years of experience
           </h3>
           <Link
-            to={`${userExists==null? `/login?next=/leads` : '/leads'}`}
+            to={`${userExists == null ? `/login?next=/leads` : "/leads"}`}
             style={{ textDecoration: "none" }}
           >
             <Button
@@ -43,7 +41,7 @@ function Home() {
             >
               Find out how
             </Button>
-         </Link>
+          </Link>
         </Box>
         <img src={dataaxle} alt="" height="400px" />
       </Typography>

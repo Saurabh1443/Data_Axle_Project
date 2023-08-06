@@ -116,6 +116,5 @@ def EmailGeneration(request , id):
   except openai.error.APIError as e:      
     return handleResponse({"msg":"Having problem with OpenAi Api"},{},False,status.HTTP_400_BAD_REQUEST)   
 
-  # except Exception as e:
-    
-  #   return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   
+  except Exception as e:
+    return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   

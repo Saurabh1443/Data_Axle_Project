@@ -5,7 +5,7 @@ import Signup from "./components/Signup/Signup";
 import Dashboard from "./components/Dashboard/Dashboard";
 import StickyHeadTable from "./components/Grid/LeadsGrid"; 
 import PrivateRoute from "./components/PrivateRoute";
-//import { MuiNavbar } from "./Navbar/navbar";
+
 
 function App() {
   return (

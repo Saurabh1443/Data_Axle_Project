@@ -4,11 +4,12 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { emailField } from "../../staticData";
 import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
 import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
+import { loadingMessages } from "../../staticData";
 
 import {
   Typography,
@@ -38,8 +39,11 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [emailTone, setEmailTone] = useState("");
   const [loading, setLoading] = useState(false);
   const [responseMail, setResponseMail] = useState(false);
-  const [emailResponse, setEmailResponse] = useState("");
-  const [index, setIndex] = useState(0);
+  const [emailResponse, setEmailResponse] = useState([]);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+  const[index,setIndex] = useState(0)
+  const [isCopied, setIsCopied] = useState(false);
+
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -48,9 +52,29 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     setEmailTone(event.target.value);
   };
 
-  const fetchDataFromAPI = async (email_description) => {
+  useEffect(() => {
+    let interval;
+    const changeLoadingMessage = () => {
+      setLoadingMessageIndex(
+        (prevIndex) => (prevIndex + 1) % (loadingMessages.length)
+      );
+    };
+
+    setLoadingMessageIndex(0);
+
+    interval = setInterval(changeLoadingMessage, 7000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const fetchDataFromAPI = async (event) => {
     try {
-      console.log(personId);
+      event.preventDefault();
+      setLoading(true);
+      const email = emailField?.find(vv=>vv?.email_tone==emailTone)
+      
       const apiUrl = `http://127.0.0.1:8000/api/persons/generateEmail/${personId}`;
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -61,41 +85,53 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         body: JSON.stringify({
           product_description: product,
           email_tone: emailTone,
-          email_description: email_description,
-          index: index,
+          email_description: email?.email_description,
+          
         }),
       });
 
       const { result, error, success } = await response.json();
+      setLoading(false);
       if (!success) {
         setResponseMail(false);
         toast.error(error?.msg, {
           position: toast.POSITION.TOP_RIGHT,
         });
+       
         return;
       } else {
-        setEmailResponse(result);
+        if(result?.length>0){
+          let filteredData = [];
+          for(let vv of result){
+            filteredData.push(JSON.parse(vv))
+          }
+          console.log(filteredData)
+          setEmailResponse(filteredData)
+        }else{
+          setEmailResponse([]);
+        }
         setResponseMail(true);
+        
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+    
   };
 
   const handleGoBack = () => {
-    setIndex(0);
-    setResponseMail((emailResponse) => !emailResponse);
+    setIndex(index=>index-1)
   };
 
-  const handleSubmit = async (event) => {
-    const email = emailField?.find((vv) => vv?.email_tone === emailTone);
+  const handleSubmit = () => {
 
-    event.preventDefault();
     try {
-      setIndex((index) => (index + 1) % 5);
+      setIsCopied(false)
+      setIndex(index=>(index+1)%5)
       setLoading(true);
-      await fetchDataFromAPI(email?.email_description);
+      
     } finally {
+      
       setLoading(false);
     }
   };
@@ -124,9 +160,11 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           sx={{
             width: "100%",
             height: 90,
+            mb: 0,
+            
           }}
         >
-          <Typography display="flex" ml={3} mt={1}>
+          <Typography display="flex" ml={2.5} mt={1}>
             <img
               src={dataaxle_logo}
               height="40px"
@@ -146,7 +184,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
 
           <Typography fontSize={12} ml={4.5}>
             Let our Genie AI assist you in <br />
-            “Generating personalised email content”.
+            <Typography fontSize={14}>“Generating personalised email content”.</Typography>
           </Typography>
 
           <IconButton
@@ -155,11 +193,12 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               top: 8,
               right: 8,
             }}
-            onClick={async () => {
+            onClick={() => {
               setProduct("");
               setEmailTone("");
               setResponseMail(false);
-              await handleClose();
+              setIndex(0)
+              handleClose();
             }}
           >
             <CloseIcon />
@@ -171,27 +210,34 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               sx={{ display: "block", margin: "auto", mt: 4 }}
             />
             <Typography fontWeight={500} m={5}>
-              Grab a cup of coffee while we generate the email for you...
+              {loadingMessages[loadingMessageIndex]}
             </Typography>
           </>
         ) : responseMail ? (
-          <ResEmail emailResponse={emailResponse}>
+          <ResEmail
+            setIsCopied={setIsCopied}
+            isCopied = {isCopied}
+            index = {index}
+            emailResponse={emailResponse}
+          >
             <CardActions sx={{ display: "flex" }}>
               <Button
                 variant="outlined"
                 onClick={handleGoBack}
-                color="inherit"
-                // sx={{ mt: 1 }}
+                  color="inherit"
+                  disabled={index==0}
+                
               >
-                Go Back
+                Previous Response
               </Button>
               <Button
                 variant="outlined"
                 color="inherit"
-                // sx={{ mt: 1 }}
-                onClick={handleSubmit}
+                
+                  onClick={handleSubmit}
+                  disabled={index==4}
               >
-                Regenerate Email
+                Regenerate Response
               </Button>
             </CardActions>
           </ResEmail>
@@ -212,8 +258,10 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               <Typography fontWeight={300} ml={3} mt={2}>
                 1. Describe product you want to market?*
               </Typography>
-              <form onSubmit={handleSubmit}>
-                <TextField
+              <form onSubmit={fetchDataFromAPI}>
+                    <TextField
+                     error={(product!=="") &&((product?.split(" ")?.length) <=2)}
+                     helperText={'Description should have atleast 3 words'}
                   id="outlined-basic"
                   placeholder="Headphone,Insurance,etc"
                   variant="outlined"

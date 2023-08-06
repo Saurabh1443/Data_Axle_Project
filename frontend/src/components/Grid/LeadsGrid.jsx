@@ -165,6 +165,9 @@ export default function StickyHeadTable() {
         loading={gridLoading}
         pageSizeOptions={[10, 25, 100]}
         disableRowSelectionOnClick
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
         pagination={pageLimit}
         onPaginationModelChange={handleChangeRowsPerPage}
       />

@@ -3,7 +3,13 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
-import { Facebook, Instagram, Twitter, YouTube } from "@mui/icons-material";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  YouTube,
+  LinkedIn,
+} from "@mui/icons-material";
 import { Box } from "@mui/material";
 
 export default function Footer() {
@@ -48,23 +54,33 @@ export default function Footer() {
             <Typography variant="h6" color="text.primary" gutterBottom>
               Follow Us
             </Typography>
-            <Link href="https://www.facebook.com/DataAxle/" color="inherit">
+            <Link
+              href="https://www.facebook.com/DataAxle/"
+              target="_blank"
+              color="inherit"
+            >
               <Facebook />
             </Link>
             <Link
-              href="https://www.instagram.com/dataaxle/"
+              href="https://www.linkedin.com/company/dataaxle"
+              target="_blank"
               color="inherit"
               sx={{ pl: 1, pr: 1 }}
             >
-              <Instagram />
+              <LinkedIn />
             </Link>
-            <Link href="https://twitter.com/Data_Axle" color="inherit">
+            <Link
+              href="https://twitter.com/Data_Axle"
+              target="_blank"
+              color="inherit"
+            >
               <Twitter />
             </Link>
 
             <Link
               href="https://www.youtube.com/@dataaxle"
               sx={{ pl: 1, pr: 1 }}
+              target="_blank"
               color="inherit"
             >
               <YouTube />

@@ -6,10 +6,9 @@ from .serializer import PersonDataSerializer , OpenAiContextSerializer
 from django.core.paginator import Paginator
 from .customPagination import customPagination
 from .EmailGeneratorManager import responseGenerator
-from django.http import JsonResponse
 import openai
-
-
+from django.core import serializers
+import json
 # handle api response
 def handleResponse(error,result,success,status):
   return Response({
@@ -85,8 +84,8 @@ def EmailGeneration(request , id):
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
       openAiResponse =  responseGenerator(personSerializer.data ,Attributes )
       finalResponse = [vv["message"]["content"] for vv in openAiResponse]
-
-      print(finalResponse)
+      # finalResponse = json.loads(finalResponse)
+      print(finalResponse ," hhhhhhhhh ")
       return handleResponse({},finalResponse,True,status.HTTP_200_OK)  
     else:
       return handleResponse(openAiSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
@@ -117,4 +116,5 @@ def EmailGeneration(request , id):
     return handleResponse({"msg":"Having problem with OpenAi Api"},{},False,status.HTTP_400_BAD_REQUEST)   
 
   except Exception as e:
+    print(e)
     return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   

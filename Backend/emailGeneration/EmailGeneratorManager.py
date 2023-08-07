@@ -2,7 +2,7 @@ import openai
 from dotenv import load_dotenv
 load_dotenv() 
 import os
-import json
+
 
 openai.api_key  = str(os.getenv('OPEN_AI_API_KEY'))
 
@@ -55,7 +55,8 @@ def get_completion_email(prompt, model="gpt-3.5-turbo"):
          # this is the degree of randomness of the model's output
     )
     #return response.choices[].message["content"]
-    return json.loads(json.dumps((response.choices)))
+    return response.choices
+    
 
 # Attributes = {"Product Description" : "The product is Adidas Shoes. It ","Email Tone":"Excitement", "Email Tone Description":"Generate enthusiasm for new product launches or sales."}
 # temp_descp = {Attributes["Product Description"]}

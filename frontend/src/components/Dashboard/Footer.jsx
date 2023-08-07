@@ -5,7 +5,6 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import {
   Facebook,
-  Instagram,
   Twitter,
   YouTube,
   LinkedIn,

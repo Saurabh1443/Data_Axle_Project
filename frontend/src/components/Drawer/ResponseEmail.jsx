@@ -4,8 +4,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopyRounded";
 import DoneOutlineRoundedIcon from "@mui/icons-material/DoneOutlineRounded";
 
 export const ResEmail = ({ emailResponse, children,index,isCopied,setIsCopied }) => {
-  // const [isCopied, setIsCopied] = useState(false);
-  
   
   const handleCopyToClipboard = () => {
     const emailText = getEmailText();

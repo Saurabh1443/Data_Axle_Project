@@ -89,8 +89,9 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           
         }),
       });
-
+      
       const { result, error, success } = await response.json();
+      
       setLoading(false);
       if (!success) {
         setResponseMail(false);
@@ -102,10 +103,10 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       } else {
         if(result?.length>0){
           let filteredData = [];
-          for(let vv of result){
+          for (let vv of result) {
             filteredData.push(JSON.parse(vv))
           }
-          console.log(filteredData)
+         
           setEmailResponse(filteredData)
         }else{
           setEmailResponse([]);
@@ -118,7 +119,11 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     }
     
   };
-
+  const handleBackToMain = () => {
+    
+    setResponseMail(responseMail => !responseMail)
+    setIndex(0)
+  }
   const handleGoBack = () => {
     setIndex(index=>index-1)
   };
@@ -220,24 +225,32 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
             index = {index}
             emailResponse={emailResponse}
           >
-            <CardActions sx={{ display: "flex" }}>
+            <CardActions sx={{ display: "flex",justifyContent:"space-between",marginTop:"-6px" }}>
               <Button
                 variant="outlined"
                 onClick={handleGoBack}
                   color="inherit"
                   disabled={index==0}
-                
+                  style={{padding:"0px 8px"}}
               >
-                Previous Response
+                Previous <br/> Response
               </Button>
               <Button
                 variant="outlined"
                 color="inherit"
-                
+                style={{padding:"0px 8px"}}
                   onClick={handleSubmit}
                   disabled={index==4}
               >
-                Regenerate Response
+                Regenerate <br /> Response
+                </Button>
+                <Button
+                variant="outlined"
+                onClick={handleBackToMain}
+                  color="inherit"
+                  style={{padding:"0px 8px"}}
+              >
+                Back to <br/> main
               </Button>
             </CardActions>
           </ResEmail>

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
-import signup_bg from "../../illustrations/signup_bg.svg";
+import signup_bg from "../illustrations/signup_bg.svg";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,6 +30,7 @@ const center = {
 };
 
 export default function Signup() {
+  const [setOpen] = useState(false);
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,10 +39,10 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    
     event.preventDefault();
 
     if (password !== confirmPassword) {
+      
       toast.error("Password and Confirm Password are not same", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -63,6 +64,7 @@ export default function Signup() {
         });
         return;
       }
+
       localStorage.setItem("email", result?.email);
       navigate("/");
     }
@@ -71,6 +73,7 @@ export default function Signup() {
   return (
     <>
       <Box sx={boxstyle}>
+        {/* Outer Card box */}
         <Grid container>
           <Grid item xs={12} sm={12} lg={6} gap={2}>
             <Box

@@ -5,12 +5,16 @@ import { Box, Button } from "@mui/material";
 import logo from "../../illustrations/logo.png";
 import { Link } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
 
 export const MuiNavbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("email");
     window.location.reload();
   };
+  const isDashboardRoute = window.location.pathname == "/leads";
+  console.log(isDashboardRoute);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -25,7 +29,23 @@ export const MuiNavbar = () => {
         }}
       >
         <Toolbar>
-          <img src={logo} alt="logo" height="70px"></img>
+          <div>
+            <img src={logo} alt="logo" height="70px"></img>
+
+            {isDashboardRoute && (
+              <Link to="/" style={{ textDecoration: "none" }}>
+                <HomeIcon
+                  style={{
+                    marginLeft: "940px",
+                    marginBottom: "16px",
+                    cursor: "pointer",
+                  }}
+                  fontSize="large"
+                  color="success"
+                />
+              </Link>
+            )}
+          </div>
         </Toolbar>
         {!localStorage.getItem("email") ? (
           <Link to="/login" style={{ textDecoration: "none" }}>

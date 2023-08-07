@@ -123,22 +123,7 @@ export default function Login() {
                         id="password"
                       />
                     </Grid>
-                    <Grid item xs={12}>
-                      <Stack direction="row" alignItems="center" spacing={2}>
-                        <Typography
-                          variant="body1"
-                          component="span"
-                          onClick={() => {}}
-                          style={{
-                            cursor: "pointer",
-                            color: "#0078d7",
-                            fontFamily: "Lato",
-                          }}
-                        >
-                          Forgot password?
-                        </Typography>
-                      </Stack>
-                    </Grid>
+
                     <Grid item xs={12}>
                       <Button
                         variant="contained"

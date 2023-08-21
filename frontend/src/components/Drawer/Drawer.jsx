@@ -10,7 +10,6 @@ import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
 import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
 import { loadingMessages } from "../../staticData";
-
 import {
   Typography,
   TextField,
@@ -20,6 +19,7 @@ import {
   FormControl,
   Button,
   CardActions,
+  
 } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
@@ -43,7 +43,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const[index,setIndex] = useState(0)
   const [isCopied, setIsCopied] = useState(false);
-
+ const[dialog,setDialog] = useState(false)
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -51,7 +51,9 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const handleEmailToneChange = (event) => {
     setEmailTone(event.target.value);
   };
-
+  const handleSetDialog = () => {
+     setDialog(dialog=>!dialog)
+   }
   useEffect(() => {
     let interval;
     const changeLoadingMessage = () => {
@@ -119,6 +121,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     }
     
   };
+  
   const handleBackToMain = () => {
     
     setResponseMail(responseMail => !responseMail)
@@ -142,6 +145,8 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   };
 
   return (
+    <>
+     
     <Drawer
       variant="persistent"
       PaperProps={{
@@ -223,7 +228,10 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
             setIsCopied={setIsCopied}
             isCopied = {isCopied}
             index = {index}
-            emailResponse={emailResponse}
+                emailResponse={emailResponse}
+                dialog={dialog}
+                setDialog={setDialog}
+                
           >
             <CardActions sx={{ display: "flex",justifyContent:"space-between",marginTop:"-6px" }}>
               <Button
@@ -242,7 +250,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                   onClick={handleSubmit}
                   disabled={index==4}
               >
-                Regenerate <br /> Response
+                Reg<br /> Res
                 </Button>
                 <Button
                 variant="outlined"
@@ -251,6 +259,14 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                   style={{padding:"0px 8px"}}
               >
                 Back to <br/> main
+                </Button>
+                <Button
+                variant="outlined"
+                 onClick={handleSetDialog}
+                  color="inherit"
+                  style={{padding:"0px 8px"}}
+              >
+                Send Email
               </Button>
             </CardActions>
           </ResEmail>
@@ -323,6 +339,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       </Paper>
 
       <ToastContainer />
-    </Drawer>
+    </Drawer></>
+    
   );
 };

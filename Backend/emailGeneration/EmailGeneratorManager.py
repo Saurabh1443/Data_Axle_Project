@@ -121,7 +121,7 @@ def responseGenerator(personal_information,Attributes):
     del personal_information["language"]
 
     prompt_valid = valid(temp_description)
-    prompt_email = email(Attributes, personal_information)n
+    prompt_email = email(Attributes, personal_information)
 
     response_valid=get_completion_valid(prompt_valid)
 

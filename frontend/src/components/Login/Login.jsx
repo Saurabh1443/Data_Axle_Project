@@ -35,7 +35,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const next = window.location.href?.split("?next=")?.[1];
-  console.log(next);
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     {

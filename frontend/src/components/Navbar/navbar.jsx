@@ -21,15 +21,16 @@ export const MuiNavbar = () => {
         position="fixed"
         sx={{
           backgroundColor: "white",
-          display: "flex",
+          // display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
           borderBottom: 1,
+          
           borderColor: "#C5C5C5",
         }}
       >
         <Toolbar>
-          <div>
+          <div >
             <img src={logo} alt="logo" height="70px"></img>
 
             {isDashboardRoute && (
@@ -48,7 +49,7 @@ export const MuiNavbar = () => {
                   <Link to="/" style={{ textDecoration: "none" }}>
                 <HomeIcon
                   style={{
-                    marginLeft: "940px",
+                    marginLeft: "40px",
                     marginBottom: "16px",
                     cursor: "pointer",
                   }}

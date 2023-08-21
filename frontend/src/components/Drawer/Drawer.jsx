@@ -10,6 +10,9 @@ import { ResEmail } from "./ResponseEmail";
 import { ToastContainer, toast } from "react-toastify";
 import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
 import { loadingMessages } from "../../staticData";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+
 import {
   Typography,
   TextField,
@@ -19,8 +22,10 @@ import {
   FormControl,
   Button,
   CardActions,
+  Tooltip,
   
 } from "@mui/material";
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -128,6 +133,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     setIndex(0)
   }
   const handleGoBack = () => {
+    setIsCopied(false)
     setIndex(index=>index-1)
   };
 
@@ -233,38 +239,42 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                 setDialog={setDialog}
                 
           >
-            <CardActions sx={{ display: "flex",justifyContent:"space-between",marginTop:"-6px" }}>
-              <Button
-                variant="outlined"
+                <CardActions sx={{ display: "flex", justifyContent: "space-between", marginTop: "-6px" }}>
+                <Tooltip title="Previous response">
+                <ArrowCircleLeftIcon variant="outlined"
                 onClick={handleGoBack}
-                  color="inherit"
-                  disabled={index==0}
-                  style={{padding:"0px 8px"}}
-              >
-                Previous <br/> Response
-              </Button>
-              <Button
-                variant="outlined"
-                color="inherit"
-                style={{padding:"0px 8px"}}
+                color={`${index==0?"disabled":"success"}`}
+                    fontSize="large"
+                    cursor="pointer"
+                    Tool
+                   />
+                </Tooltip>
+                  
+              
+                  <Tooltip title="Regenerate response">
+                  <AutorenewIcon variant="outlined"
+                color={`${index==4?"disabled":"success"}`}
+                fontSize="large"
                   onClick={handleSubmit}
-                  disabled={index==4}
-              >
-                Reg<br /> Res
-                </Button>
+                  cursor = "pointer"
+                  />
+                </Tooltip>
+                
                 <Button
                 variant="outlined"
                 onClick={handleBackToMain}
                   color="inherit"
                   style={{padding:"0px 8px"}}
               >
-                Back to <br/> main
+                New <br /> Content
                 </Button>
                 <Button
                 variant="outlined"
                  onClick={handleSetDialog}
-                  color="inherit"
-                  style={{padding:"0px 8px"}}
+                    sx={{
+                      color: "#ffffff",
+                      backgroundColor: "green"
+                }}
               >
                 Send Email
               </Button>

@@ -52,4 +52,10 @@ class personData(models.Model):
     def __str__(self) -> str:
          return self.title
 
-
+class emailModel(models.Model):
+    receiverEmail = models.EmailField()
+    subject = models.CharField(max_length=100)
+    message = models.CharField(max_length=1000)
+    sendAt = models.DateTimeField(default=timezone.now)
+    def __str__(self) -> str:
+         return self.receiverEmail

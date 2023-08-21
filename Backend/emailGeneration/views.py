@@ -1,14 +1,18 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import personData
-from .serializer import PersonDataSerializer , OpenAiContextSerializer
+from .models import personData,emailModel
+from .serializer import PersonDataSerializer , OpenAiContextSerializer ,emailHandleSerializer
 from django.core.paginator import Paginator
 from .customPagination import customPagination
 from .EmailGeneratorManager import responseGenerator
 import openai
 from django.core import serializers
 import json
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 # handle api response
 def handleResponse(error,result,success,status):
   return Response({
@@ -83,9 +87,10 @@ def EmailGeneration(request , id):
 
       Attributes={"Product Description":productDescription,"Email Tone":emailTone,"Email Tone Description":emailDescription}
       openAiResponse =  responseGenerator(personSerializer.data ,Attributes )
+      
       finalResponse = [vv["message"]["content"] for vv in openAiResponse]
       # finalResponse = json.loads(finalResponse)
-      print(finalResponse ," hhhhhhhhh ")
+     
       return handleResponse({},finalResponse,True,status.HTTP_200_OK)  
     else:
       return handleResponse(openAiSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
@@ -118,3 +123,46 @@ def EmailGeneration(request , id):
   except Exception as e:
     print(e)
     return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   
+
+@api_view(['POST'])
+def sendEmail(request):
+  try:
+    print("called")
+    if request.method == 'POST':
+        emailSerializer = emailHandleSerializer(data=request.data)
+
+        if emailSerializer.is_valid():
+            
+            subject = emailSerializer.validated_data.get('subject')
+            receiverEmail = emailSerializer.validated_data.get('receiverEmail')
+            message = emailSerializer.validated_data.get('message')
+
+            emailSerializer.save()
+            
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [receiverEmail]
+            res = send_mail(
+              subject,
+              message,
+              from_email,
+              recipient_list=recipient_list,
+              fail_silently=False,
+            )
+            return handleResponse({},res,True,status.HTTP_200_OK)  
+        else:
+           return handleResponse(emailSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
+    
+  except Exception as e:
+   print(e)
+   return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_400_BAD_REQUEST) 
+  
+@api_view(['GET']) 
+def allMails(request):
+ 
+ if request.method == "GET":   
+  try:
+   allMail = emailModel.objects.all()
+   serializer = emailHandleSerializer(allMail, many=True)
+   return handleResponse({},serializer.data,True,status.HTTP_200_OK)
+  except Exception as ve:
+   return handleResponse({"msg":"some error occurred"},{},False,status.HTTP_404_NOT_FOUND)

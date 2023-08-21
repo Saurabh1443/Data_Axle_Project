@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import personData
+from .models import personData , emailModel
 
 class PersonDataSerializer(serializers.ModelSerializer):
     
@@ -11,6 +11,12 @@ class PersonDataSerializer(serializers.ModelSerializer):
 class OpenAiContextSerializer(serializers.Serializer):
     product_description = serializers.CharField()
     email_tone = serializers.CharField() 
-    email_description = serializers.CharField()  
+    email_description = serializers.CharField()
+
+class emailHandleSerializer(serializers.ModelSerializer):
+    class Meta:
+       model = emailModel
+       fields = ["receiverEmail","subject","message",'sendAt']
+       
      
         

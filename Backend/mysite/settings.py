@@ -125,3 +125,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://192.168.147.32:3000"
 ]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER = 'balmukund254368@gmail.com'
+EMAIL_HOST_PASSWORD = 'wwzkqlpdvdkkuyry'
+EMAIL_USE_TLS=True

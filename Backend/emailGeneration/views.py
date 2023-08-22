@@ -160,7 +160,7 @@ def allMails(request):
  
  if request.method == "GET":   
   try:
-   allMail = emailModel.objects.all()
+   allMail = emailModel.objects.filter(subject__contains=f'{""}')
    serializer = emailHandleSerializer(allMail, many=True)
    return handleResponse({},serializer.data,True,status.HTTP_200_OK)
   except Exception as ve:

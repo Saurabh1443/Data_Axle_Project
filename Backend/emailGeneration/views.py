@@ -11,6 +11,8 @@ from django.core import serializers
 import json
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.exceptions import ValidationError
+import requests
 
 
 # handle api response
@@ -127,7 +129,7 @@ def EmailGeneration(request , id):
 @api_view(['POST'])
 def sendEmail(request):
   try:
-    print("called")
+    
     if request.method == 'POST':
         emailSerializer = emailHandleSerializer(data=request.data)
 
@@ -148,12 +150,13 @@ def sendEmail(request):
               recipient_list=recipient_list,
               fail_silently=False,
             )
+            
             return handleResponse({},res,True,status.HTTP_200_OK)  
         else:
            return handleResponse(emailSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
-    
+  
   except Exception as e:
-   print(e)
+   
    return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_400_BAD_REQUEST) 
   
 @api_view(['GET']) 

@@ -19,7 +19,6 @@ import {
   FormControl,
   Button,
   CardActions,
-  
 } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
@@ -41,9 +40,9 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const [responseMail, setResponseMail] = useState(false);
   const [emailResponse, setEmailResponse] = useState([]);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
-  const[index,setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
- const[dialog,setDialog] = useState(false)
+  const [dialog, setDialog] = useState(false);
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -52,13 +51,13 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     setEmailTone(event.target.value);
   };
   const handleSetDialog = () => {
-     setDialog(dialog=>!dialog)
-   }
+    setDialog((dialog) => !dialog);
+  };
   useEffect(() => {
     let interval;
     const changeLoadingMessage = () => {
       setLoadingMessageIndex(
-        (prevIndex) => (prevIndex + 1) % (loadingMessages.length)
+        (prevIndex) => (prevIndex + 1) % loadingMessages.length
       );
     };
 
@@ -75,8 +74,8 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
     try {
       event.preventDefault();
       setLoading(true);
-      const email = emailField?.find(vv=>vv?.email_tone==emailTone)
-      
+      const email = emailField?.find((vv) => vv?.email_tone == emailTone);
+
       const apiUrl = `http://127.0.0.1:8000/api/persons/generateEmail/${personId}`;
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -88,258 +87,259 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
           product_description: product,
           email_tone: emailTone,
           email_description: email?.email_description,
-          
         }),
       });
-      
+
       const { result, error, success } = await response.json();
-      
+
       setLoading(false);
       if (!success) {
         setResponseMail(false);
         toast.error(error?.msg, {
           position: toast.POSITION.TOP_RIGHT,
         });
-       
+
         return;
       } else {
-        if(result?.length>0){
+        if (result?.length > 0) {
           let filteredData = [];
           for (let vv of result) {
-            filteredData.push(JSON.parse(vv))
+            filteredData.push(JSON.parse(vv));
           }
-         
-          setEmailResponse(filteredData)
-        }else{
+
+          setEmailResponse(filteredData);
+        } else {
           setEmailResponse([]);
         }
         setResponseMail(true);
-        
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    
   };
-  
+
   const handleBackToMain = () => {
-    
-    setResponseMail(responseMail => !responseMail)
-    setIndex(0)
-  }
+    setResponseMail((responseMail) => !responseMail);
+    setIndex(0);
+  };
   const handleGoBack = () => {
-    setIndex(index=>index-1)
+    setIndex((index) => index - 1);
   };
 
   const handleSubmit = () => {
-
     try {
-      setIsCopied(false)
-      setIndex(index=>(index+1)%5)
+      setIsCopied(false);
+      setIndex((index) => (index + 1) % 5);
       setLoading(true);
-      
     } finally {
-      
       setLoading(false);
     }
   };
 
   return (
     <>
-     
-    <Drawer
-      variant="persistent"
-      PaperProps={{
-        sx: {
-          width: "30vw",
-          top: "135px",
-        },
-      }}
-      anchor={"right"}
-      open={open}
-    >
-      <Paper
-        sx={{
-          width: "100%",
-          height: "100%",
-          overflow: "hidden",
-          backgroundColor: "#F5F5F5",
+      <Drawer
+        variant="persistent"
+        PaperProps={{
+          sx: {
+            width: "30vw",
+            top: "135px",
+          },
         }}
+        anchor={"right"}
+        open={open}
       >
-        <Box
+        <Paper
           sx={{
             width: "100%",
-            height: 90,
-            mb: 0,
-            
+            height: "100%",
+            overflow: "hidden",
+            backgroundColor: "#F5F5F5",
           }}
         >
-          <Typography display="flex" ml={2.5} mt={1}>
-            <img
-              src={dataaxle_logo}
-              height="40px"
-              width="40px"
-              alt="Data Axle"
-            />
-
-            <Typography
-              variant="h5"
-              display={"inline"}
-              fontWeight={400}
-              margin="5px"
-            >
-              Genie-AI
-            </Typography>
-          </Typography>
-
-          <Typography fontSize={12} ml={4.5}>
-            Let our Genie AI assist you in <br />
-            <Typography fontSize={14}>“Generating personalised email content”.</Typography>
-          </Typography>
-
-          <IconButton
+          <Box
             sx={{
-              position: "absolute",
-              top: 8,
-              right: 8,
-            }}
-            onClick={() => {
-              setProduct("");
-              setEmailTone("");
-              setResponseMail(false);
-              setIndex(0)
-              handleClose();
+              width: "100%",
+              height: 90,
+              mb: 0,
             }}
           >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        {loading ? (
-          <>
-            <CircularProgress
-              sx={{ display: "block", margin: "auto", mt: 4 }}
-            />
-            <Typography fontWeight={500} m={5}>
-              {loadingMessages[loadingMessageIndex]}
+            <Typography display="flex" ml={2.5} mt={1}>
+              <img
+                src={dataaxle_logo}
+                height="40px"
+                width="40px"
+                alt="Data Axle"
+              />
+
+              <Typography
+                variant="h5"
+                display={"inline"}
+                fontWeight={400}
+                margin="5px"
+              >
+                Genie-AI
+              </Typography>
             </Typography>
-          </>
-        ) : responseMail ? (
-          <ResEmail
-            setIsCopied={setIsCopied}
-            isCopied = {isCopied}
-            index = {index}
-                emailResponse={emailResponse}
-                dialog={dialog}
-                setDialog={setDialog}
-                
-          >
-            <CardActions sx={{ display: "flex",justifyContent:"space-between",marginTop:"-6px" }}>
-              <Button
-                variant="outlined"
-                onClick={handleGoBack}
-                  color="inherit"
-                  disabled={index==0}
-                  style={{padding:"0px 8px"}}
-              >
-                Previous <br/> Response
-              </Button>
-              <Button
-                variant="outlined"
-                color="inherit"
-                style={{padding:"0px 8px"}}
-                  onClick={handleSubmit}
-                  disabled={index==4}
-              >
-                Reg<br /> Res
-                </Button>
-                <Button
-                variant="outlined"
-                onClick={handleBackToMain}
-                  color="inherit"
-                  style={{padding:"0px 8px"}}
-              >
-                Back to <br/> main
-                </Button>
-                <Button
-                variant="outlined"
-                 onClick={handleSetDialog}
-                  color="inherit"
-                  style={{padding:"0px 8px"}}
-              >
-                Send Email
-              </Button>
-            </CardActions>
-          </ResEmail>
-        ) : (
-          <>
-            <Paper
-              variant="outlined"
-              square
+
+            <Typography fontSize={12} ml={4.5}>
+              Let our Genie AI assist you in <br />
+              <Typography fontSize={14}>
+                “Generating personalised email content”.
+              </Typography>
+            </Typography>
+
+            <IconButton
               sx={{
-                m: "2%",
-                mt: "0%",
-                height: "80%",
+                position: "absolute",
+                top: 8,
+                right: 8,
+              }}
+              onClick={() => {
+                setProduct("");
+                setEmailTone("");
+                setResponseMail(false);
+                setIndex(0);
+                handleClose();
               }}
             >
-              <Typography fontWeight={500} ml={3} mt={2}>
-                Let us know some more details
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          {loading ? (
+            <>
+              <CircularProgress
+                sx={{ display: "block", margin: "auto", mt: 4 }}
+              />
+              <Typography fontWeight={500} m={5}>
+                {loadingMessages[loadingMessageIndex]}
               </Typography>
-              <Typography fontWeight={300} ml={3} mt={2}>
-                1. Describe product you want to market?*
-              </Typography>
-              <form onSubmit={fetchDataFromAPI}>
-                    <TextField
-                     error={(product!=="") &&((product?.split(" ")?.length) <=2)}
-                     helperText={'Description should have atleast 3 words'}
-                  id="outlined-basic"
-                  placeholder="Headphone,Insurance,etc"
-                  variant="outlined"
-                  required
-                  value={product}
-                  sx={{ ml: 5, mt: 2, minWidth: 270 }}
-                  onChange={handleProductChange}
-                />
-                <Typography fontWeight={300} ml={3} mt={2}>
-                  2. Select a tone for Email content*
-                </Typography>
-                <FormControl sx={{ ml: 5, mt: 2, minWidth: 270 }}>
-                  <InputLabel id="demo-simple-select-helper-label">
-                    Select Email Tone
-                  </InputLabel>
-                  <Select
-                    id="email-tone"
-                    required
-                    value={emailTone}
-                    label="Select Email Tone"
-                    onChange={handleEmailToneChange}
-                    MenuProps={MenuProps}
-                  >
-                    {emailField?.map((vv, ind) => {
-                      return (
-                        <MenuItem key={ind} value={`${vv.email_tone}`}>
-                          <em>{vv.email_tone}</em>
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-
+            </>
+          ) : responseMail ? (
+            <ResEmail
+              setIsCopied={setIsCopied}
+              isCopied={isCopied}
+              index={index}
+              emailResponse={emailResponse}
+              dialog={dialog}
+              setDialog={setDialog}
+              loading={loading}
+              setLoading={setLoading}
+            >
+              <CardActions
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "-6px",
+                }}
+              >
                 <Button
                   variant="outlined"
-                  type="submit"
+                  onClick={handleGoBack}
                   color="inherit"
-                  sx={{ ml: 20, mt: 2 }}
+                  disabled={index == 0}
+                  style={{ padding: "0px 8px" }}
                 >
-                  Generate Email
+                  Previous <br /> Response
                 </Button>
-              </form>
-            </Paper>
-          </>
-        )}
-      </Paper>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  style={{ padding: "0px 8px" }}
+                  onClick={handleSubmit}
+                  disabled={index == 4}
+                >
+                  Reg
+                  <br /> Res
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={handleBackToMain}
+                  color="inherit"
+                  style={{ padding: "0px 8px" }}
+                >
+                  Back to <br /> main
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={handleSetDialog}
+                  color="inherit"
+                  style={{ padding: "0px 8px" }}
+                >
+                  Send Email
+                </Button>
+              </CardActions>
+            </ResEmail>
+          ) : (
+            <>
+              <Paper
+                variant="outlined"
+                square
+                sx={{
+                  m: "2%",
+                  mt: "0%",
+                  height: "80%",
+                }}
+              >
+                <Typography fontWeight={500} ml={3} mt={2}>
+                  Let us know some more details
+                </Typography>
+                <Typography fontWeight={300} ml={3} mt={2}>
+                  1. Describe product you want to market?*
+                </Typography>
+                <form onSubmit={fetchDataFromAPI}>
+                  <TextField
+                    error={product !== "" && product?.split(" ")?.length <= 2}
+                    helperText={"Description should have atleast 3 words"}
+                    id="outlined-basic"
+                    placeholder="Headphone,Insurance,etc"
+                    variant="outlined"
+                    required
+                    value={product}
+                    sx={{ ml: 5, mt: 2, minWidth: 270 }}
+                    onChange={handleProductChange}
+                  />
+                  <Typography fontWeight={300} ml={3} mt={2}>
+                    2. Select a tone for Email content*
+                  </Typography>
+                  <FormControl sx={{ ml: 5, mt: 2, minWidth: 270 }}>
+                    <InputLabel id="demo-simple-select-helper-label">
+                      Select Email Tone
+                    </InputLabel>
+                    <Select
+                      id="email-tone"
+                      required
+                      value={emailTone}
+                      label="Select Email Tone"
+                      onChange={handleEmailToneChange}
+                      MenuProps={MenuProps}
+                    >
+                      {emailField?.map((vv, ind) => {
+                        return (
+                          <MenuItem key={ind} value={`${vv.email_tone}`}>
+                            <em>{vv.email_tone}</em>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
 
-      <ToastContainer />
-    </Drawer></>
-    
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    color="inherit"
+                    sx={{ ml: 20, mt: 2 }}
+                  >
+                    Generate Email
+                  </Button>
+                </form>
+              </Paper>
+            </>
+          )}
+        </Paper>
+
+        <ToastContainer />
+      </Drawer>
+    </>
   );
 };

@@ -86,6 +86,7 @@ export default function StickyHeadTable() {
       const apiUrl = `http://127.0.0.1:8000/api/persons?limit=${pageLimit?.pageSize}&page=${pageNumber}&name=${searchName}`;
       const response = await fetch(apiUrl);
       const { error, result, success, ...vv } = await response.json();
+      console.log(result?.[0])
       setGridLoading(false);
       if (!success) {
         setRows([]);

@@ -1,15 +1,31 @@
 import Drawer from "@mui/material/Drawer";
+
 import Paper from "@mui/material/Paper";
+
 import IconButton from "@mui/material/IconButton";
+
 import CloseIcon from "@mui/icons-material/Close";
+
 import Box from "@mui/material/Box";
+
 import CircularProgress from "@mui/material/CircularProgress";
+
 import React, { useEffect, useState } from "react";
+
 import { emailField } from "../../staticData";
+
 import { ResEmail } from "./ResponseEmail";
+
 import { ToastContainer, toast } from "react-toastify";
+
 import dataaxle_logo from "../../illustrations/dataaxle_logo.png";
+
 import { loadingMessages } from "../../staticData";
+
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+
 import {
   Typography,
   TextField,
@@ -19,15 +35,18 @@ import {
   FormControl,
   Button,
   CardActions,
+  Tooltip,
 } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
+
 const ITEM_PADDING_TOP = 8;
 
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 2 + ITEM_PADDING_TOP,
+
       width: 250,
     },
   },
@@ -35,14 +54,23 @@ const MenuProps = {
 
 export const GridDrawer = ({ open, handleClose, personId }) => {
   const [product, setProduct] = useState("");
+
   const [emailTone, setEmailTone] = useState("");
+
   const [loading, setLoading] = useState(false);
+
   const [responseMail, setResponseMail] = useState(false);
+
   const [emailResponse, setEmailResponse] = useState([]);
+
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+
   const [index, setIndex] = useState(0);
+
   const [isCopied, setIsCopied] = useState(false);
+
   const [dialog, setDialog] = useState(false);
+
   const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
@@ -50,11 +78,14 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const handleEmailToneChange = (event) => {
     setEmailTone(event.target.value);
   };
+
   const handleSetDialog = () => {
     setDialog((dialog) => !dialog);
   };
+
   useEffect(() => {
     let interval;
+
     const changeLoadingMessage = () => {
       setLoadingMessageIndex(
         (prevIndex) => (prevIndex + 1) % loadingMessages.length
@@ -73,19 +104,27 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
   const fetchDataFromAPI = async (event) => {
     try {
       event.preventDefault();
+
       setLoading(true);
+
       const email = emailField?.find((vv) => vv?.email_tone == emailTone);
 
       const apiUrl = `http://127.0.0.1:8000/api/persons/generateEmail/${personId}`;
+
       const response = await fetch(apiUrl, {
         method: "POST",
+
         headers: {
           Accept: "application/json",
+
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           product_description: product,
+
           email_tone: emailTone,
+
           email_description: email?.email_description,
         }),
       });
@@ -93,8 +132,10 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       const { result, error, success } = await response.json();
 
       setLoading(false);
+
       if (!success) {
         setResponseMail(false);
+
         toast.error(error?.msg, {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -103,6 +144,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       } else {
         if (result?.length > 0) {
           let filteredData = [];
+
           for (let vv of result) {
             filteredData.push(JSON.parse(vv));
           }
@@ -111,6 +153,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         } else {
           setEmailResponse([]);
         }
+
         setResponseMail(true);
       }
     } catch (error) {
@@ -120,16 +163,22 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
 
   const handleBackToMain = () => {
     setResponseMail((responseMail) => !responseMail);
+
     setIndex(0);
   };
+
   const handleGoBack = () => {
+    setIsCopied(false);
+
     setIndex((index) => index - 1);
   };
 
   const handleSubmit = () => {
     try {
       setIsCopied(false);
+
       setIndex((index) => (index + 1) % 5);
+
       setLoading(true);
     } finally {
       setLoading(false);
@@ -143,6 +192,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         PaperProps={{
           sx: {
             width: "30vw",
+
             top: "135px",
           },
         }}
@@ -152,15 +202,20 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
         <Paper
           sx={{
             width: "100%",
+
             height: "100%",
+
             overflow: "hidden",
+
             backgroundColor: "#F5F5F5",
           }}
         >
           <Box
             sx={{
               width: "100%",
+
               height: 90,
+
               mb: 0,
             }}
           >
@@ -192,25 +247,33 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
             <IconButton
               sx={{
                 position: "absolute",
+
                 top: 8,
+
                 right: 8,
               }}
               onClick={() => {
                 setProduct("");
+
                 setEmailTone("");
+
                 setResponseMail(false);
+
                 setIndex(0);
+
                 handleClose();
               }}
             >
               <CloseIcon />
             </IconButton>
           </Box>
+
           {loading ? (
             <>
               <CircularProgress
                 sx={{ display: "block", margin: "auto", mt: 4 }}
               />
+
               <Typography fontWeight={500} m={5}>
                 {loadingMessages[loadingMessageIndex]}
               </Typography>
@@ -223,48 +286,54 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
               emailResponse={emailResponse}
               dialog={dialog}
               setDialog={setDialog}
-              loading={loading}
-              setLoading={setLoading}
             >
               <CardActions
                 sx={{
                   display: "flex",
+
                   justifyContent: "space-between",
+
                   marginTop: "-6px",
                 }}
               >
-                <Button
-                  variant="outlined"
-                  onClick={handleGoBack}
-                  color="inherit"
-                  disabled={index == 0}
-                  style={{ padding: "0px 8px" }}
-                >
-                  Previous <br /> Response
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  style={{ padding: "0px 8px" }}
-                  onClick={handleSubmit}
-                  disabled={index == 4}
-                >
-                  Reg
-                  <br /> Res
-                </Button>
+                <Tooltip title="Previous response">
+                  <ArrowCircleLeftIcon
+                    variant="outlined"
+                    onClick={handleGoBack}
+                    color={`${index == 0 ? "disabled" : "success"}`}
+                    fontSize="large"
+                    cursor="pointer"
+                    Tool
+                  />
+                </Tooltip>
+
+                <Tooltip title="Regenerate response">
+                  <AutorenewIcon
+                    variant="outlined"
+                    color={`${index == 4 ? "disabled" : "success"}`}
+                    fontSize="large"
+                    onClick={handleSubmit}
+                    cursor="pointer"
+                  />
+                </Tooltip>
+
                 <Button
                   variant="outlined"
                   onClick={handleBackToMain}
                   color="inherit"
                   style={{ padding: "0px 8px" }}
                 >
-                  Back to <br /> main
+                  New <br /> Content
                 </Button>
+
                 <Button
                   variant="outlined"
                   onClick={handleSetDialog}
-                  color="inherit"
-                  style={{ padding: "0px 8px" }}
+                  sx={{
+                    color: "#ffffff",
+
+                    backgroundColor: "green",
+                  }}
                 >
                   Send Email
                 </Button>
@@ -277,16 +346,20 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                 square
                 sx={{
                   m: "2%",
+
                   mt: "0%",
+
                   height: "80%",
                 }}
               >
                 <Typography fontWeight={500} ml={3} mt={2}>
                   Let us know some more details
                 </Typography>
+
                 <Typography fontWeight={300} ml={3} mt={2}>
                   1. Describe product you want to market?*
                 </Typography>
+
                 <form onSubmit={fetchDataFromAPI}>
                   <TextField
                     error={product !== "" && product?.split(" ")?.length <= 2}
@@ -299,13 +372,16 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                     sx={{ ml: 5, mt: 2, minWidth: 270 }}
                     onChange={handleProductChange}
                   />
+
                   <Typography fontWeight={300} ml={3} mt={2}>
                     2. Select a tone for Email content*
                   </Typography>
+
                   <FormControl sx={{ ml: 5, mt: 2, minWidth: 270 }}>
                     <InputLabel id="demo-simple-select-helper-label">
                       Select Email Tone
                     </InputLabel>
+
                     <Select
                       id="email-tone"
                       required
@@ -337,7 +413,6 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
             </>
           )}
         </Paper>
-
         <ToastContainer />
       </Drawer>
     </>

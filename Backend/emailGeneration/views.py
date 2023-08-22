@@ -123,12 +123,12 @@ def EmailGeneration(request , id):
     return handleResponse({"msg":"Having problem with OpenAi Api"},{},False,status.HTTP_400_BAD_REQUEST)   
 
   except Exception as e:
-    print(e)
     return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 @api_view(['POST'])
 def sendEmail(request):
   try:
+   
     
     if request.method == 'POST':
         emailSerializer = emailHandleSerializer(data=request.data)
@@ -157,6 +157,7 @@ def sendEmail(request):
   
   except Exception as e:
    
+   
    return handleResponse({"msg":"Some error occured! Try after some time"},{},False,status.HTTP_400_BAD_REQUEST) 
   
 @api_view(['GET']) 
@@ -164,7 +165,7 @@ def allMails(request):
  
  if request.method == "GET":   
   try:
-   allMail = emailModel.objects.all()
+   allMail = emailModel.objects.filter(subject__contains=f'{""}')
    serializer = emailHandleSerializer(allMail, many=True)
    return handleResponse({},serializer.data,True,status.HTTP_200_OK)
   except Exception as ve:

@@ -16,7 +16,7 @@ class OpenAiContextSerializer(serializers.Serializer):
 class emailHandleSerializer(serializers.ModelSerializer):
     class Meta:
        model = emailModel
-       fields = ["receiverEmail","subject","message",'sendAt']
+       fields = "__all__"
        
      
         

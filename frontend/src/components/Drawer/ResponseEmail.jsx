@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Grid,
   TextField,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopyRounded";
@@ -17,7 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { sendEmailAttachement, validateReceiverEmailAddress } from "../../emailHandler";
 export const ResEmail = ({
   emailResponse,
   children,
@@ -38,35 +37,13 @@ export const ResEmail = ({
     setIsCopied(true);
   };
 
-  const validateReceiverEmailAddress = async (targetEmail) => {
-    try {
-      let data = await fetch(
-        `https://emailvalidation.abstractapi.com/v1/?api_key=53d485e88c164ab1bc24a62b7960cf98&email=${targetEmail}`
-      );
-      let response = await data.json();
-      console.log(response);
-      if (response?.is_smtp_valid?.value) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch {}
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setOpen(true);
 
     if (await validateReceiverEmailAddress(receiverEmail)) {
-      const apiUrl = `http://127.0.0.1:8000/api/persons/sendEmail`;
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ receiverEmail, subject, message }),
-      });
+      const response = await sendEmailAttachement(receiverEmail,subject,message)
       const { error, success } = await response.json();
       setOpen(false);
 
@@ -248,7 +225,6 @@ export const ResEmail = ({
           </div>
           <Tooltip title="Copy To Clipboard" placement="left">
             <Button
-              //variant="outlined"
               color="primary"
               size="large"
               onClick={handleCopyToClipboard}

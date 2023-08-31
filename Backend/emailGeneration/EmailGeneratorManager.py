@@ -101,17 +101,18 @@ Follow the guidelines below:\
 2. Use the "Attributes" and "Personal Information" delimited in triple backticks for generating dynamic content in email.\
 3. Attributes section is provided by Product owner and Personal information is of a target person.\
 4. Compose a compelling email that aligns with the given Product Description, email tone and Email tone description under attributes.\
-5. Feel free to use emojis or other Unicode characters to add emphasis or express emotions in the email.\
-6. Strictly, Do not include product descriptions, features, or any special offers, deals, or discounts in the email, unless explicitly mentioned in the Product Description.\
-7. Utilize as many fields under "Personal Information" as possible in combination to create an engaging \
+5. Regardless of the tone of the email, refrain from revealing any Personally Identifiable Information (PII), such as income, age, and the like.\
+6. Feel free to use emojis or other Unicode characters to add emphasis or express emotions in the email.\
+7. Strictly, Do not include product descriptions, features, or any special offers, deals, or discounts in the email, unless explicitly mentioned in the Product Description.\
+8. Utilize as many fields under "Personal Information" as possible in combination to create an engaging \
 email.\
-8. If you come across any irrelevant fields under "Personal Information", unrelated to the product \
+9. If you come across any irrelevant fields under "Personal Information", unrelated to the product \
 or unsuitable for the email, please omit them. Prioritize the recipient's name \
 and relevant details to ensure a meaningful email. \
-9. Remember you are prohibited from including PII data fields present in Personal Information under Attributes in email \
+10. Remember you are prohibited from including PII data fields present in Personal Information under Attributes in email \
 and focus on engaging the recipient with a personalized message. \
-10. Generate email in json format, with "subject","regards" and each paragraph in different key like "para1", "para2",etc. \
-11. Please ensure that the generated email does not contain any vulgar language or offensive content and maintains a professional and respectful tone.\
+11. Generate email in json format, with "subject","regards" and each paragraph in different key like "para1", "para2",etc. \
+12. Please ensure that the generated email does not contain any vulgar language or offensive content and maintains a professional and respectful tone.\
 """
 
 def responseGenerator(personal_information,Attributes):

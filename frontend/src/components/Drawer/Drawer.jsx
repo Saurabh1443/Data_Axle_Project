@@ -119,7 +119,6 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
 
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           product_description: product,
 
@@ -130,6 +129,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
       });
 
       const { result, error, success } = await response.json();
+      console.log(result)
 
       setLoading(false);
 
@@ -142,14 +142,14 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
 
         return;
       } else {
-        if (result?.length > 0) {
-          let filteredData = [];
-
-          for (let vv of result) {
+          if (result?.length > 0) {
+           let filteredData = [];
+        
+           for (let vv of result) {
             filteredData.push(JSON.parse(vv));
-          }
-
-          setEmailResponse(filteredData);
+           }
+       
+         setEmailResponse(filteredData);
         } else {
           setEmailResponse([]);
         }
@@ -335,7 +335,7 @@ export const GridDrawer = ({ open, handleClose, personId }) => {
                     backgroundColor: "green",
                   }}
                 >
-                  Send Email
+                  Use Email
                 </Button>
               </CardActions>
             </ResEmail>

@@ -17,6 +17,7 @@ import requests
 
 # handle api response
 def handleResponse(error,result,success,status):
+   
   return Response({
       "error":error,
       "result":result,
@@ -91,8 +92,8 @@ def EmailGeneration(request , id):
       openAiResponse =  responseGenerator(personSerializer.data ,Attributes )
       
       finalResponse = [vv["message"]["content"] for vv in openAiResponse]
-      # finalResponse = json.loads(finalResponse)
-     
+      
+      
       return handleResponse({},finalResponse,True,status.HTTP_200_OK)  
     else:
       return handleResponse(openAiSerializer.errors,{},False,status.HTTP_400_BAD_REQUEST) 
@@ -163,10 +164,21 @@ def sendEmail(request):
 @api_view(['GET']) 
 def allMails(request):
  
- if request.method == "GET":   
+ if request.method == "GET":
+  search_query = request.GET.get('subject',"")   
   try:
-   allMail = emailModel.objects.filter(subject__contains=f'{""}')
+   allMail = emailModel.objects.filter(subject__contains=f'{search_query}')
    serializer = emailHandleSerializer(allMail, many=True)
    return handleResponse({},serializer.data,True,status.HTTP_200_OK)
   except Exception as ve:
    return handleResponse({"msg":"some error occurred"},{},False,status.HTTP_404_NOT_FOUND)
+
+@api_view(['Delete']) 
+def deleteMails(request,id):
+ 
+ if request.method == "DELETE":
+  try:
+   mailTemplate = emailModel.objects.get(pk=id).delete()
+   return handleResponse({},{},True,status.HTTP_200_OK)
+  except Exception as ve:
+   return handleResponse({"msg":"Record not found"},{},False,status.HTTP_404_NOT_FOUND)
